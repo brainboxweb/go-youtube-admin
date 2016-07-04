@@ -3,7 +3,6 @@ package main
 import (
 	"reflect"
 	"testing"
-	//"fmt"
 )
 
 func TestUnmarshalYAML(t *testing.T) {
@@ -18,6 +17,8 @@ func TestUnmarshalYAML(t *testing.T) {
         id: JkVr2DJM3Ac
         body: |-
             The body for YouTube purposes
+        music:
+            - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
     body: |-
         This is the body
     transcript: |-
@@ -41,6 +42,7 @@ func TestUnmarshalYAML(t *testing.T) {
 	yt1 := YouTubeData{
 		Id:   "JkVr2DJM3Ac",
 		Body: "The body for YouTube purposes",
+		Music: []string {"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"},
 	}
 	post1 := Post{
 		Slug:        "the-slug",
@@ -126,6 +128,10 @@ func TestParseTemplate(t *testing.T) {
 			Body: `The body for YouTube purposes.
 
 On more than one line if necessary.`,
+			Music: []string{
+				"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186",
+				"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186",
+			},
 		},
 		Body:        "This is the body",
 		Transcript:  "This is the transcript.",
@@ -136,8 +142,7 @@ On more than one line if necessary.`,
 	expected := parsed_1
 
 	if actual != expected {
-
-		t.Errorf("expected %d, \n actual %d", expected, actual)
+		t.Errorf("expected:\n %d, \n\n\n actual:\n %d", expected, actual)
 
 	}
 
@@ -171,4 +176,7 @@ LET'S CONNECT!
 -- https://twitter.com/DevThatPays
 
 MUSIC
--- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186`
+-- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
+-- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
+
+`

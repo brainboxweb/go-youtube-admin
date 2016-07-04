@@ -7,10 +7,8 @@ import (
 
 	"code.google.com/p/google-api-go-client/youtube/v3"
 
-	//"net/http"
 	"fmt"
 	//"regexp"
-	//"gopkg.in/yaml.v2"
 
 	//"io/ioutil"
 	"gopkg.in/yaml.v2"
@@ -174,6 +172,7 @@ func readYAMLFile(filename string) []byte {
 type YouTubeData struct {
 	Id   string
 	Body string
+	Music []string
 }
 
 type Post struct {
@@ -232,5 +231,7 @@ LET'S CONNECT!
 -- https://www.facebook.com/DevelopmentThatPays/
 -- https://twitter.com/DevThatPays
 
-MUSIC
--- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186`
+{{if .YouTubeData.Music}}MUSIC{{ range .YouTubeData.Music }}
+-- {{ . }}{{ end }}
+{{ end }}
+`
