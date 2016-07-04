@@ -171,16 +171,20 @@ func readYAMLFile(filename string) []byte {
 	return data
 }
 
+type YouTubeData struct {
+	Id   string
+	Body string
+}
+
 type Post struct {
 	Title       string
 	Description string
 	Slug        string
-	Date        string `yaml:"date"`
-	YouTubeId   string `yaml:youtubeid"`
-	YouTubeBody string `yaml:youtubebody"`
-	Image       string
-	Body        string
-	Transcript  string
+	Date        string
+	YouTubeData YouTubeData
+	Image      string
+	Body       string
+	Transcript string
 }
 
 func convertYAML(input []byte) map[int]Post {
@@ -214,7 +218,7 @@ func parseTemplate(post Post) string {
 	return buff.String()
 }
 
-const templateYouTube = `{{.YouTubeBody}}
+const templateYouTube = `{{.YouTubeData.Body}}
 
 
 _________________

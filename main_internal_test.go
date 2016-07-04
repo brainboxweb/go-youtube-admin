@@ -14,8 +14,9 @@ func TestUnmarshalYAML(t *testing.T) {
     title: The title
     description: "The description"
     date: 2015-08-20
-    youtubeid: JkVr2DJM3Ac
-    youtubebody: |-
+    youtubedata:
+        id: JkVr2DJM3Ac
+        body: |-
             The body for YouTube purposes
     body: |-
         This is the body
@@ -27,32 +28,41 @@ func TestUnmarshalYAML(t *testing.T) {
     title: The title two
     description: "The description two"
     date: 2015-08-27
-    youtubeid: xxxxxxxx
-    youtubebody: |-
+    youtubedata:
+        id: xxxxxxxx
+        body: |-
             The body for YouTube purposes. Again.
     body: |-
         This is the body. Again.
     transcript: |-
         This is the transcript. Again.`
 
+
+	yt1 := YouTubeData{
+		Id:   "JkVr2DJM3Ac",
+		Body: "The body for YouTube purposes",
+	}
 	post1 := Post{
 		Slug:        "the-slug",
 		Title:       "The title",
 		Description: "The description",
 		Date:        "2015-08-20",
-		YouTubeId:   "JkVr2DJM3Ac",
-		YouTubeBody: "The body for YouTube purposes",
+		YouTubeData: yt1,
 		Body:        "This is the body",
 		Transcript:  "This is the transcript.",
 	}
 
+
+	yt2 := YouTubeData{
+		Id:   "xxxxxxxx",
+		Body: "The body for YouTube purposes. Again.",
+	}
 	post2 := Post{
 		Slug:        "the-slug-2",
 		Title:       "The title two",
 		Description: "The description two",
 		Date:        "2015-08-27",
-		YouTubeId:   "xxxxxxxx",
-		YouTubeBody: "The body for YouTube purposes. Again.",
+		YouTubeData: yt2,
 		Body:        "This is the body. Again.",
 		Transcript:  "This is the transcript. Again.",
 	}
@@ -111,10 +121,12 @@ func TestParseTemplate(t *testing.T) {
 		Title:       "The title",
 		Description: "The description.",
 		Date:        "2015-08-20",
-		YouTubeId:   "JkVr2DJM3Ac",
-		YouTubeBody: `The body for YouTube purposes.
+		YouTubeData: YouTubeData{
+			Id:   "JkVr2DJM3Ac",
+			Body: `The body for YouTube purposes.
 
 On more than one line if necessary.`,
+		},
 		Body:        "This is the body",
 		Transcript:  "This is the transcript.",
 	}
