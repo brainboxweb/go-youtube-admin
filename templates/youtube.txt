@@ -1,0 +1,15 @@
+Hello mum {{.Title}}
+
+_________________
+
+"Development That Pays" is a weekly video that takes a business-focussed look at what's working now in software development. If you business depends on software development, we'd love to have you subscribe and join us!
+
+SUBSCRIBE!
+-- http://www.developmentthatpays.com/-/subscribe
+
+LET'S CONNECT!
+-- https://www.facebook.com/DevelopmentThatPays/
+-- https://twitter.com/DevThatPays
+
+MUSIC
+-- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
