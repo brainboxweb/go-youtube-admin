@@ -38,11 +38,10 @@ func TestUnmarshalYAML(t *testing.T) {
     transcript: |-
         This is the transcript. Again.`
 
-
 	yt1 := YouTubeData{
-		Id:   "JkVr2DJM3Ac",
-		Body: "The body for YouTube purposes",
-		Music: []string {"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"},
+		Id:    "JkVr2DJM3Ac",
+		Body:  "The body for YouTube purposes",
+		Music: []string{"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"},
 	}
 	post1 := Post{
 		Slug:        "the-slug",
@@ -53,7 +52,6 @@ func TestUnmarshalYAML(t *testing.T) {
 		Body:        "This is the body",
 		Transcript:  "This is the transcript.",
 	}
-
 
 	yt2 := YouTubeData{
 		Id:   "xxxxxxxx",
@@ -100,10 +98,10 @@ func TestReadYAMLFile(t *testing.T) {
 
 func TestGetPosts(t *testing.T) {
 
-	//posts := getPosts("posts-test.yml")
-	//
-	//fmt.Println(posts)
+	getPosts("posts.yml") //Just a test for parsing
 
+	//fmt.Println(posts)
+	//
 	//for k, post := range posts{
 	//	fmt.Println(k, post.Title)
 	//	fmt.Println(post.Description)
@@ -124,7 +122,7 @@ func TestParseTemplate(t *testing.T) {
 		Description: "The description.",
 		Date:        "2015-08-20",
 		YouTubeData: YouTubeData{
-			Id:   "JkVr2DJM3Ac",
+			Id: "JkVr2DJM3Ac",
 			Body: `The body for YouTube purposes.
 
 On more than one line if necessary.`,
@@ -133,8 +131,8 @@ On more than one line if necessary.`,
 				"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186",
 			},
 		},
-		Body:        "This is the body",
-		Transcript:  "This is the transcript.",
+		Body:       "This is the body",
+		Transcript: "This is the transcript.",
 	}
 
 	actual := parseTemplate(post)
@@ -147,6 +145,7 @@ On more than one line if necessary.`,
 	}
 
 }
+
 //
 //func TestGetAndParsePosts(t *testing.T) {
 //

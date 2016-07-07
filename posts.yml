@@ -1,9 +1,14 @@
 1:
     slug: software-development-frustration
     title: Is your software development function a source of frustration?
-    summary: "It's not Inevitable:  development CAN pay."
+    description: "It's not Inevitable: development CAN pay."
     date: 2015-08-20
-    youtube_id: JkVr2DJM3Ac
+    youtubedata:
+            id: JkVr2DJM3Ac
+            body: |-
+                The body for YouTube purposes
+            music:
+                - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
     body: |-
 
         If you're a **Lead Developer**... or a **Product Owner**...
@@ -58,10 +63,15 @@
 2:
     slug: not-about-code-its-about-business
     title: It's not about Code. It's about Business.
-    summary: It's more important to 'build the right thing' than to 'build it right'.
+    description: It's more important to 'build the right thing' than to 'build it right'.
     date: 2015-09-09
-    youtube_id: 8Yx7zF7kjs8
-    image: episode2_333.png
+
+    youtubedata:
+            id: 8Yx7zF7kjs8
+            body: |-
+                The body for YouTube purposes
+            music:
+                - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
     body: |-
 
         As a Software Engineer, I love to write good quality code.
@@ -193,9 +203,15 @@
 3:
     slug: without-code-there-is-no-business
     title: Without Code There Is No Business.
-    summary: How to use code the RIGHT WAY to validate your business objectives.
+    description: How to use code the RIGHT WAY to validate your business objectives.
     date: 2015-09-16
-    youtube_id: om0_KvdaJTg
+
+    youtubedata:
+        id: om0_KvdaJTg
+        body: |-
+            The body for YouTube purposes
+        music:
+            - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
     body: |-
 
         In the [last episode](/post/2-not-about-code-its-about-business) I told the tale of two walls and two ladders:
@@ -378,12 +394,19 @@
 4:
     slug: business-plus-code-plus-people
     title: Business + Code + PEOPLE
-    index: 4
-    summary: The WAY that people work together has a SURPRISING impact on the quality and quantity of the software output.
+    description: The WAY that people work together has a SURPRISING impact on the quality and quantity of the software output.
     date: 2015-09-23
-    youtube_id: dP1imJeAwt8
-    image: episode4_333.png
+
+    youtubedata:
+            id: dP1imJeAwt8
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
     body: |-
+
+
 
         In [Episode 2](/posts/2-not-about-code-its-about-business) we talked about the importance of **business objectives**:
         how it’s more important to satisfy
@@ -459,11 +482,18 @@
 5:
     slug: the-v-model-and-office-layout
     title: The V Model and Office Layout
-    index: 5
-    summary: Can the layout of an office have an impact on the software development process?
+    description: Can the layout of an office have an impact on the software development process?
     date: 2015-09-30
-    youtube_id: aM5ksuYOwJA
-    image: episode5_333.png
+
+
+    youtubedata:
+            id: aM5ksuYOwJA
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         Can the layout of an office have an impact on the software development process?
@@ -577,9 +607,18 @@
 6:
     slug: v-model-hidden-secrets
     title: The Hidden Secrets of the V-Model
-    summary: "The V-Model is not just about Verification: But there's more to this clever little model than meets the eye..."
+    description: "The V-Model is not just about Verification: But there's more to this clever little model than meets the eye..."
     date: 2015-10-07
-    youtube_id: cxHySI4uVLs
+
+
+    youtubedata:
+        id: cxHySI4uVLs
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
     body: |-
 
         The V-Model of Software Development has stood the test of time: it can trace its roots back to the early 90s.
@@ -661,10 +700,21 @@
 7:
     slug: Agile-is-never-having-to-commit-to-a-deadline
     title: Agile is... Never Having To Commit To a Deadline?
-    index: 7
-    summary: The world of business is full of deadlines. But deadlines and Agile don't seem to mix...
+
+    description: The world of business is full of deadlines. But deadlines and Agile don't seem to mix...
     date: 2015-10-14
-    youtube_id: MeYrV_Xm2rI
+
+
+    youtubedata:
+            id: MeYrV_Xm2rI
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
+
     image: episode7_333.png
     body: |-
 
@@ -839,11 +889,18 @@
 8:
     slig: You-are-killing-the-daily-stand-up
     title: Are You Killing the Daily Stand-up?
-    index: 8
-    summary: The Daily Stand-up is a cornerstone of Agile Software Development. And you may be undermining it without even knowing it.
+
+    description: The Daily Stand-up is a cornerstone of Agile Software Development. And you may be undermining it without even knowing it.
     date: 2015-10-21
-    youtube_id: aFLgG8cduiI
-    image: episode8_333.png
+
+
+    youtubedata:
+            id: aFLgG8cduiI
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
     body: |-
 
         The Daily Stand-up is a cornerstone of Agile Software Development. But you - and
@@ -1044,11 +1101,19 @@
 9:
     slug: stand-up-you-are-doing-it-wrong
     title: "Stand-up: You're Doing It Wrong!"
-    index: 9
-    summary: I’m a big fan of the daily stand-up. But I’m not such a fan of the way that most stand-ups are run. There is a better way.
+
+    description: I’m a big fan of the daily stand-up. But I’m not such a fan of the way that most stand-ups are run. There is a better way.
     date: 2015-10-28
-    youtube_id: H02BlTXpcto
-    image: episode9_333.png
+
+
+    youtubedata:
+            id: H02BlTXpcto
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         I’m a big fan of the daily stand-up. Even when they don’t work well, they work better than no stand-up at all.
@@ -1177,11 +1242,19 @@
 10:
     slug: walking-the-board
     title: Walking The Board
-    index: 10
-    summary: Hold on tight as we Walk the Board - side to side in 5 minutes or less
+
+    description: Hold on tight as we Walk the Board - side to side in 5 minutes or less
     date: 2015-11-04
-    youtube_id: 316qdj10j9M
-    image: episode10_333.png
+
+
+    youtubedata:
+            id: 316qdj10j9M
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         [Last time](http://www.developmentthatpays.com/posts/9-stand-up-you-are-doing-it-wrong), we looked at the
@@ -1378,9 +1451,18 @@
 11:
     slug: number-one-reason-training-fails
     title: The Number One Reason That Training Fails
-    summary: "When we provide or receive training, we expect performance to improve. But is that a reasonable expectation? (Spoiler: No, it isn’t.)"
+    description: "When we provide or receive training, we expect performance to improve. But is that a reasonable expectation? (Spoiler: No, it isn’t.)"
     date: 2015-11-11
-    youtube_id: vD_mGFnpWZg
+
+
+    youtubedata:
+            id: vD_mGFnpWZg
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         When we provide or receive training, we expect performance to improve.
@@ -1497,9 +1579,18 @@
 12:
     slug: tech-hiring-fail
     title: Tech Recruitment Fail - How To Consign Great Candidates To The Bin
-    summary: Is your tech recruitment process eliminating the BEST candidates?
+    description: Is your tech recruitment process eliminating the BEST candidates?
     date: 2015-11-18
-    youtube_id: Wq05MtMWgCY
+
+
+    youtubedata:
+            id: Wq05MtMWgCY
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         A recruiter called me about a month ago. She said she had a great opportunity for me. And it did sound good:
@@ -1657,9 +1748,18 @@
 13:
     slug: tech-hiring-funnel
     title: Tech Hiring Funnel - As Seen At BBC Worldwide
-    summary: Here's a technical recruitment process that doesn't scare off the best candidates
+    description: Here's a technical recruitment process that doesn't scare off the best candidates
     date: 2015-11-25
-    youtube_id: 7lCK2ZHr1J0
+
+
+    youtubedata:
+            id: 7lCK2ZHr1J0
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         Here's a Recruitment Funnel that does a great job of balancing efficiency and effectiveness:
@@ -1802,9 +1902,18 @@
 14:
     slug: scrum-vs-kanban-part-one
     title: 'Scrum vs. Kanban Part I: "You Talk about Work. We Do Work"'
-    summary: What happens when an Agile Team splits in two, with one sticking to Scrum, and one moving to Kanban?
+    description: What happens when an Agile Team splits in two, with one sticking to Scrum, and one moving to Kanban?
     date: 2015-12-02
-    youtube_id: 9Jgu1BlTlSc
+
+
+    youtubedata:
+        id: 9Jgu1BlTlSc
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
     body: |-
 
         In this video (and the next one or two) we're going to follow the fortunes of an Agile Team that split in two:
@@ -1993,9 +2102,19 @@
 15:
     slug: scrum-vs-kanban-part-two
     title: "Scrum vs. Kanban Part II: Kanban Kaos"
-    summary: Team Kanban seem to working efficiently. But are they working effectively?
+    description: Team Kanban seem to working efficiently. But are they working effectively?
     date: 2015-12-09
-    youtube_id: n2ZrUQNwrUk
+
+
+    youtubedata:
+            id: n2ZrUQNwrUk
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
     body: |-
 
         Team Kanban seem to have the upper hand: they are working more development hours, and are
@@ -2157,9 +2276,20 @@
 13:
     slug: scrum-vs-kanban-part-three
     title: "Scrum vs. Kanban Part III: Kanban FTW"
-    summary: How will Team Scrum cope with the loss of their fearless leader?
+    description: How will Team Scrum cope with the loss of their fearless leader?
     date: 2015-12-09
-    youtube_id: sOlFPi5xJqQ
+
+
+    youtubedata:
+            id: sOlFPi5xJqQ
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
+
     body: |-
 
         Team Scrum are in for a shock. How will they cope with the loss of their much-loved Project Manager
@@ -2351,9 +2481,19 @@
 17:
     slug: superstar-coder
     title: Do You Need A Superstar Coder?
-    summary: There are some very talented coders out there. Should you get one?
+    description: There are some very talented coders out there. Should you get one?
     date: 2016-01-06
-    youtube_id: mFtocDZEJUo
+
+
+    youtubedata:
+            id: mFtocDZEJUo
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
     body: |-
 
         [The Advent of Code](http://adventofcode.com/) is a series of 25 coding tests. I managed to battle my way
@@ -2459,9 +2599,19 @@
 18:
     slug: the-trials-of-software-development
     title: The Trials of Software Development
-    summary: My friends and I spent a year preparing for a competition. We made a big mistake.
+    description: My friends and I spent a year preparing for a competition. We made a big mistake.
     date: 2016-01-13
-    youtube_id: uusvkb15_q4
+
+
+    youtubedata:
+            id: uusvkb15_q4
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
     body: |-
 
         As a teenager, I was mad keen on motorbikes. By the age of 14, a group of us had trials bikes, and we
@@ -2560,9 +2710,18 @@
 19:
     slug: how-to-spot-a-sick-agile-board
     title: How to Spot a Sick Agile Board At Twenty Paces
-    summary: Can you tell if your Agile team is in trouble - just by looking at the Agile Board? From a distance?
+    description: Can you tell if your Agile team is in trouble - just by looking at the Agile Board? From a distance?
     date: 2016-01-20
-    youtube_id: CmU-g2hRO24
+
+
+    youtubedata:
+            id: CmU-g2hRO24
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
     body: |-
 
         Can you tell if your Agile team is in trouble - just by looking at the Agile Board?
@@ -2744,9 +2903,19 @@
 20:
     slug: i-am-blocked
     title: "Sh!t Software Developers Say: \"I'm Blocked!\""
-    summary: If a Developer tells you that he or she is locked... Should you believe them?
+    description: If a Developer tells you that he or she is locked... Should you believe them?
     date: 2016-01-27
-    youtube_id: 60814lXx0nQ
+
+
+    youtubedata:
+            id: 60814lXx0nQ
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
     body: |-
 
         Software Development is hard. Unpredictable. There are problems around every corner.
@@ -2869,9 +3038,19 @@
 21:
     slug: multitasking-is-evil
     title: Three Good Reasons To Work On ONE Thing At A Time
-    summary: Is working on more than one thing at a time really such a problem?
+    description: Is working on more than one thing at a time really such a problem?
     date: 2016-02-03
-    youtube_id: CgbM4c8GJa8
+
+
+    youtubedata:
+            id: CgbM4c8GJa8
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+
     body: |-
 
         I seem to be hard-wired to *try* to work on more than one thing at a time.
@@ -2990,9 +3169,19 @@
 22:
     slug: were-going-to-need-more-tests
     title: "Sh!t Software Developers Say: \"We're Going To Need More Tests\""
-    summary: Is it always a good thing to stop developing and start writing tests?
+    description: Is it always a good thing to stop developing and start writing tests?
     date: 2016-02-10
-    youtube_id: jrus212djPs
+
+
+    youtubedata:
+        id: jrus212djPs
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+
     body: |-
 
 
@@ -3160,22 +3349,32 @@
 
 
 23:
-      slug: were-going-to-need-more-tests-tdd
-      title: "Sh!t Software Developers Say: \"We're Going To Need More Tests\" - Part II"
-      summary: How easy is to write Unit Test for an existing code base?
-      date: 2016-02-17
-      youtube_id: u560YnA3Eds
-      body: |-
-
-          Welcome back to our deep-dive into software testing.
-
-          (If you missed **Part I** you can find it [here](http://www.developmentthatpays.com/posts/22-were-going-to-need-more-tests).)
-
-          Today the focus is on **Unit Tests** and **Test Driven Development**.
+    slug: were-going-to-need-more-tests-tdd
+    title: "Sh!t Software Developers Say: \"We're Going To Need More Tests\" - Part II"
+    description: How easy is to write Unit Test for an existing code base?
+    date: 2016-02-17
 
 
+    youtubedata:
+        id: u560YnA3Eds
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
 
-      transcript: |-
+
+
+    body: |-
+
+        Welcome back to our deep-dive into software testing.
+
+        (If you missed **Part I** you can find it [here](http://www.developmentthatpays.com/posts/22-were-going-to-need-more-tests).)
+
+        Today the focus is on **Unit Tests** and **Test Driven Development**.
+
+
+
+    transcript: |-
 
 
           Welcome back to our deep dive into Software Testing.
@@ -3295,14 +3494,22 @@
 
 
 24:
-      slug: were-going-to-need-more-tests-bdd
-      title: "Sh!t Software Developers Say: \"We're Going To Need More Tests\" - Part III"
-      index: 24
-      summary: Behavioural Testing and Behaviour Driven Development
-      date: 2016-02-24 12:30
-      youtube_id: o4Y--AOoh9k
-      image: episode24_333.png
-      body: |-
+    slug: were-going-to-need-more-tests-bdd
+    title: "Sh!t Software Developers Say: \"We're Going To Need More Tests\" - Part III"
+
+    description: Behavioural Testing and Behaviour Driven Development
+    date: 2016-02-24 12:30
+
+
+    youtubedata:
+        id: o4Y--AOoh9k
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+    body: |-
 
           Welcome back to our deep-dive into software testing.
 
@@ -3316,7 +3523,7 @@
           Enjoy the video.
 
 
-      transcript: |-
+    transcript: |-
 
           Welcome back to our deep dive into Software Testing.
 
@@ -3458,12 +3665,21 @@
 
 
 25:
-      slig: kanban-origins
-      title: Kanban Origins
-      summary: From supermarket shelf to Toyota Corporation to Software Development
-      date: 2016-03-02 12:30
-      youtube_id: aeo1JcdHjGU
-      body: |-
+    slug: kanban-origins
+    title: Kanban Origins
+    description: From supermarket shelf to Toyota Corporation to Software Development
+    date: 2016-03-02 12:30
+
+
+    youtubedata:
+        id: aeo1JcdHjGU
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+    body: |-
 
           The system that we know as "Kanban" can trace its roots back to the late 1940's.
 
@@ -3472,7 +3688,7 @@
           Or have we thrown out the baby with the bathwater?
 
 
-      transcript: |-
+    transcript: |-
 
 
           This is a Kanban board
@@ -3584,14 +3800,21 @@
 
 
 26:
-      slug: get-a-grip-on-your-wip
-      title: Get a Grip on Your W.I.P.
-      index: 26
-      summary: Limiting Work In Progress (WIP) is one of the cornerstones of Agile
-      date: 2016-03-09 12:30
-      youtube_id: p-cBY4L_y_s
-      image: episode26_333.png
-      body: |-
+    slug: get-a-grip-on-your-wip
+    title: Get a Grip on Your W.I.P.
+
+    description: Limiting Work In Progress (WIP) is one of the cornerstones of Agile
+    date: 2016-03-09 12:30
+
+
+    youtubedata:
+              id: p-cBY4L_y_s
+              music:
+                    - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+              body: |-
+                  The body for YouTube purposes
+
+    body: |-
 
           Limiting **Work In Progress** (**WIP**) is one of the cornerstones of Agile.
 
@@ -3611,7 +3834,7 @@
 
 
 
-      transcript: |-
+    transcript: |-
 
           Limiting **Work In Progress** (WIP) is one of the cornerstones of Agile.
 
@@ -3706,19 +3929,29 @@
 
 
 27:
-      slug: the-state-of-agile-address
-      title: The State Of Agile Address 2016
-      summary: My personal, biased and mis-informed rant on the State of Agile
-      date: 2016-03-16 12:30
-      youtube_id: Qx74BnANB6w
-      body: |-
+    slug: the-state-of-agile-address
+    title: The State Of Agile Address 2016
+    description: My personal, biased and mis-informed rant on the State of Agile
+    date: 2016-03-16 12:30
+
+
+    youtubedata:
+        id: Qx74BnANB6w
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+
+    body: |-
 
           It's "State of My Industry" month on LinkedIn, so I thought I'd weigh in with some personal, biased
           and (more than likely) misinformed views of the **State of Agile in 2016**.
 
           Are you optimistic about the future of Agile? Or do you have concerns?
 
-      transcript: |-
+    transcript: |-
 
           It's "State of My Industry" month on LinkedIn, so I thought I'd weigh in with some
           personal, biased and (more than likely) misinformed view of the state of Agile.
@@ -3818,14 +4051,22 @@
 
 
 28:
-      slug: the-joy-of-present-value
-      title: The Joy of Present Value
-      index: 28
-      summary: Present Value is on of the most useful concepts in accounting and finance
-      date: 2016-03-23 12:30
-      youtube_id: j0PeW1MsyEM
-      image: episode28_333.png
-      body: |-
+    slug: the-joy-of-present-value
+    title: The Joy of Present Value
+
+    description: Present Value is on of the most useful concepts in accounting and finance
+    date: 2016-03-23 12:30
+
+
+    youtubedata:
+        id: j0PeW1MsyEM
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+    body: |-
 
            **Present Value** (**PV**) is one the most useful concepts in accounting and finance. By the end of video, you'll
            be able to answer the question:
@@ -3833,7 +4074,7 @@
            **"Is a bird in the hand worth two in the bush?"**
 
 
-      transcript: |-
+    transcript: |-
 
           As you know, a bird in the hand is worth two in the bush.
 
@@ -3932,9 +4173,20 @@
 29:
       slug: the-joy-of-net-present-value
       title: The Joy of Net Present Value
-      summary: Present Value is a powerful concept. Net Present Value (NPV) is even more powerful.
+      description: Present Value is a powerful concept. Net Present Value (NPV) is even more powerful.
       date: 2016-03-30 12:30
-      youtube_id: ektsXQkc7Og
+  
+
+
+      youtubedata:
+        id: ektsXQkc7Og
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+
       body: |-
 
            In the [previous episode](/posts/28-the-joy-of-present-value), we explored the wonderful world of **Present Value** (**PV**).
@@ -4189,9 +4441,20 @@
 30:
       slug: the-risk-of-discount-rate
       title: The "Risk" of Discount Rate
-      summary: It's not as straightforward as it looks
+      description: It's not as straightforward as it looks
       date: 2016-04-06 8:30
-      youtube_id: 3iLenVuXAgM
+  
+      
+
+      youtubedata:
+        id: 3iLenVuXAgM
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
            The calculations for **Present Value** (PV) and **Net Present Value** (NPV) look so elegant...
@@ -4327,9 +4590,20 @@
 31:
       slug: the-joy-of-internal-rate-of-return-irr
       title: The Joy of Internal Rate Of Return (IRR)
-      summary: A neat way to side-step Discount Rate
+      description: A neat way to side-step Discount Rate
       date: 2016-04-13 8:30
-      youtube_id: REexsZE4mJo
+  
+      
+      
+      youtubedata:
+        id: REexsZE4mJo
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
           The **Risk Premium** element of **Discount Rate** is tricky to determine.
@@ -4546,9 +4820,20 @@
 32:
       slug: is-agile-more-profitable-than-waterfall
       title: Is Agile More Profitable Than Waterfall?
-      summary: Follow the money and you'll see that Agile has a massive headstart.
+      description: Follow the money and you'll see that Agile has a massive headstart.
       date: 2016-04-20 8:30
-      youtube_id: 8i2YY4a_jPg
+  
+      
+
+      youtubedata:
+          id: 8i2YY4a_jPg
+          music:
+                - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+          body: |-
+              The body for YouTube purposes
+
+
+      
       body: |-
 
           Have you ever heard of **Discounted Cash Flow Analysis**?
@@ -4891,11 +5176,21 @@
 33:
       slug: state-of-agile-address-peoples-voice
       title: State of Agile Address - People's Voice
-      index: 33
-      summary: Here's what YOU think about the current state of Agile
+
+      description: Here's what YOU think about the current state of Agile
       date: 2016-04-27 8:30
-      youtube_id: GDEvnbr0sJw
-      image: episode33_333.png
+  
+
+      youtubedata:
+          id: GDEvnbr0sJw
+          music:
+                - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+          body: |-
+              The body for YouTube purposes
+
+
+      
+      
       body: |-
 
           Here's what YOU think of the current state of Agile.
@@ -5045,9 +5340,21 @@
 34:
       slug: minimum-viable-product-mvp
       title: "Minimum Viable Product: You're Doing It Wrong!"
-      summary: Time to bring Minimium Viable Product into Sharp Focus
+      description: Time to bring Minimium Viable Product into Sharp Focus
       date: 2016-05-04 8:30
-      youtube_id: rmGOBzpn_98
+  
+      
+
+      youtubedata:
+        id: rmGOBzpn_98
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
+      
       body: |-
 
           Have you come across **MVP**?
@@ -5140,9 +5447,20 @@
 35:
       slug: top-3-minimum-viable-products
       title: 3 Awesome MVPs
-      summary: The best of the best of MVPs
+      description: The best of the best of MVPs
       date: 2016-05-11 8:30
-      youtube_id: xPJoq_QVsY4
+  
+      
+
+      youtubedata:
+        id: xPJoq_QVsY4
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
           What are the best **Minimum Viable Products** (**MVP**s) of all time?
@@ -5333,9 +5651,20 @@
 36:
       slug: wizard-of-oz-mvp
       title: The Wizard Of Oz Minimum Viable Product
-      summary: "Pay no attention to the man behind the curtain"
+      description: "Pay no attention to the man behind the curtain"
       date: 2016-05-18 7:10
-      youtube_id: VPVec5eupTY
+  
+      
+
+      youtubedata:
+        id: VPVec5eupTY
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
            *Minimum Viable Products* come in all shapes and sizes.
@@ -5482,9 +5811,20 @@
 37:
       slug: mvp-worked-example
       title: "Case Study: Building a Real Life-Minimum Viable Product"
-      summary: "Cool: an MVP in MDF!"
+      description: "Cool: an MVP in MDF!"
       date: 2016-05-25 7:10
-      youtube_id: cIe8Xt9nByY
+  
+      
+
+      youtubedata:
+        id: cIe8Xt9nByY
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
           In the last couple of episodes, we've been looking at **Minimum Viable Products**.
@@ -5668,9 +6008,19 @@
 38:
       slug: mvp-worked-example-2
       title: "Case Study: Building a Real-Life Minimum Viable Product - Part 2"
-      summary: "Cool: an MVP in MDF. Again!"
+      description: "Cool: an MVP in MDF. Again!"
       date: 2016-06-01 7:05
-      youtube_id: 4_sL_tOu2Xc
+  
+      
+      youtubedata:
+        id: 4_sL_tOu2Xc
+        music:
+              - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+        body: |-
+            The body for YouTube purposes
+
+
+      
       body: |-
 
           Wood has been cut, glued and screwed. The spray gun has made and appearance. Hardware has been fitted.
@@ -5878,9 +6228,20 @@
 39:
         slug: my-dad-the-agile-coach
         title: My Dad... The Agile Coach?!?
-        summary: My dad knew nothing about Agile. Or did he?
+        description: My dad knew nothing about Agile. Or did he?
         date: 2016-06-08 7:05
-        youtube_id: tCbeLauIKew
+    
+
+
+        youtubedata:
+            id: tCbeLauIKew
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+        
         body: |-
 
             My dad was a DIY genius. What he didn't know about woodworking wasn't worth knowing.
@@ -6217,9 +6578,20 @@
 40:
         slug: agile-vs-waterfall
         title: Agile vs Waterfall
-        summary: What needs to be true for Waterfall to win?
+        description: What needs to be true for Waterfall to win?
         date: 2016-06-15 7:05
-        youtube_id: 8Nrw8pho6cY
+    
+        
+
+        youtubedata:
+            id: 8Nrw8pho6cY
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+
+
+        
         body: |-
 
             In the [previous episode](/posts/39-my-dad-the-agile-coach) my 19 year old self took on my dad
@@ -6396,9 +6768,20 @@
 41:
         slug: tdd-vs-bdd
         title: TDD vs BDD
-        summary: Can the principles of Test Driven Development (TDD) and Behaviour Driven Development (BDD) be applied to a simple DIY challenge?
+        description: Can the principles of Test Driven Development (TDD) and Behaviour Driven Development (BDD) be applied to a simple DIY challenge?
         date: 2016-06-22 7:05
-        youtube_id: 4QFYTQy47yA
+    
+        
+
+        youtubedata:
+            id: 4QFYTQy47yA
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+    
+
+        
         body: |-
 
             In a [previous episode](/posts/39-my-dad-the-agile-coach) I took on the challenge
@@ -6578,9 +6961,20 @@
 42:
         slug: agile-product-ownership
         title: Agile Product Ownership
-        summary: A perfect primer on Product Ownership from Henrik Kniberg
+        description: A perfect primer on Product Ownership from Henrik Kniberg
         date: 2016-06-29 7:05
-        youtube_id: 3qP27HEkHE8
+    
+        
+        youtubedata:
+            id: 3qP27HEkHE8
+            music:
+                  - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
+            body: |-
+                The body for YouTube purposes
+    
+
+        
+        
         body: |-
 
             I have a treat for you: a practically-perfect-in-every-way primer on **Agile Product Ownership**

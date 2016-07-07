@@ -1,26 +1,58 @@
 package main
 
 import (
-	"flag"
-	//"fmt"
-	"log"
-
+	"bytes"
 	"code.google.com/p/google-api-go-client/youtube/v3"
-
 	"fmt"
-	//"regexp"
-
-	//"io/ioutil"
+	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	//"sync"
+	"log"
+	"os"
 	"text/template"
-	//"bytes"
-	"bytes"
+	"time"
 )
 
 func main() {
-	flag.Parse()
+
+	app := cli.NewApp()
+	app.Name = "youtube2"
+	app.Usage = "Manage YouTube videos"
+	app.Action = func(c *cli.Context) error {
+
+		if c.NArg() > 0 {
+			if c.Args().Get(0) == "backup" {
+				backup()
+			}
+		}
+
+		return nil
+	}
+
+	app.Run(os.Args)
+}
+
+func backup() {
+
+	vids := getYouTubeData()
+
+	d, err := yaml.Marshal(&vids)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	d1 := []byte(d)
+
+	t := time.Now()
+	filename := fmt.Sprintf("backup/youtube-%d-%d-%d.yml", t.Year(), t.Month(), t.Day())
+
+	err = ioutil.WriteFile(filename, d1, 0644)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+}
+
+func getYouTubeData() []YouTubeData {
 
 	service := getService()
 
@@ -32,10 +64,12 @@ func main() {
 		log.Fatalf("Error making API call to list channels: %v", err.Error())
 	}
 
+	data := []YouTubeData{}
+
 	for _, channel := range response.Items {
 		playlistId := channel.ContentDetails.RelatedPlaylists.Uploads
-		// Print the playlist ID for the list of uploaded videos.
-		fmt.Printf("Videos in list %s\r\n", playlistId)
+		//// Print the playlist ID for the list of uploaded videos.
+		//fmt.Printf("Videos in list %s\r\n", playlistId)
 
 		nextPageToken := ""
 		for {
@@ -56,16 +90,17 @@ func main() {
 
 			for _, playlistItem := range playlistResponse.Items {
 
-				title := playlistItem.Snippet.Title
-				videoId := playlistItem.Snippet.ResourceId.VideoId
+				yt := YouTubeData{
+					Title: playlistItem.Snippet.Title,
+					Id:    playlistItem.Snippet.ResourceId.VideoId,
+					Body:  playlistItem.Snippet.Description,
+				}
 
-				fmt.Printf("%v, (%v)\r\n", title, videoId)
+				data = append(data, yt)
 
 				//Get details!
 				//Update the descriotiont
-
-				playlistItem.Snippet.Title += "\n+++"
-
+				//playlistItem.Snippet.Title += "\n+++"
 			}
 
 			// Set the token to retrieve the next page of results
@@ -76,6 +111,8 @@ func main() {
 			}
 		}
 	}
+
+	return data
 
 }
 
@@ -122,39 +159,12 @@ func updateSignoff(service *youtube.Service, id string) {
 
 }
 
-//
-//func updateDescriptionFooter(description string) string {
-//
-//	r := regexp.MustCompile(`(?s:(.*)----(.*)?)`)
-//	fmt.Println(r)
-//
-//	matches := r.FindStringSubmatch(description)
-//
-//	if len(matches) < 2 {
-//		return description
-//	}
-//
-//	//for _, match := range matches{
-//	//
-//	//	fmt.Println("\n\n=========================\n", match)
-//	//
-//	//}
-//
-//	out := matches[1] + "----\n" + "NEW CONTENT"
-//
-//	//out := r.ReplaceAllString(description, "FOOTER")
-//
-//	return out
-//}
-
 func getPosts(postsFle string) map[int]Post {
 
 	data := readYAMLFile(postsFle)
 	posts := convertYAML(data)
-	fmt.Println(posts)
 
 	return posts
-
 }
 
 func readYAMLFile(filename string) []byte {
@@ -170,8 +180,9 @@ func readYAMLFile(filename string) []byte {
 }
 
 type YouTubeData struct {
-	Id   string
-	Body string
+	Id    string
+	Title string
+	Body  string
 	Music []string
 }
 
@@ -181,9 +192,9 @@ type Post struct {
 	Slug        string
 	Date        string
 	YouTubeData YouTubeData
-	Image      string
-	Body       string
-	Transcript string
+	Image       string
+	Body        string
+	Transcript  string
 }
 
 func convertYAML(input []byte) map[int]Post {
