@@ -3,6 +3,7 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -144,7 +145,6 @@ func TestGetVideo(t *testing.T) {
 	}
 }
 
-
 type FakeYouTube struct {
 	Err error
 }
@@ -154,7 +154,6 @@ func (yt FakeYouTube) persistVideo(*youtube.Video) error {
 	return yt.Err
 }
 
-
 func TestUpdateVideo(t *testing.T) {
 
 	post := Post{
@@ -162,15 +161,22 @@ func TestUpdateVideo(t *testing.T) {
 		YouTubeData: YouTubeData{
 			Id:    "EHoyDH1cYwM",
 			Title: "The original Youtube title",
-			Body: "Thsi si the body om the post/youtube item",
+			Body:  "Thsi si the body om the post/youtube item",
 		},
 		Body: "this is the body of the POST item",
 	}
 
+	c := make(chan interface{})
+
 	yt := FakeYouTube{}
 
-	err := updateVideo(yt, 1, post)
-	if err != nil {
+	go updateVideo(c, yt, 1, post)
+
+	result := <-c
+
+	//Assert the error
+	err, found := result.(error)
+	if found {
 		t.Errorf("Video not updated", err.Error())
 	}
 
@@ -190,11 +196,15 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 		Err: errors.New("Call to YoutTube Failed"),
 	}
 
-	err := updateVideo(yt, 1, post)
+	c := make(chan interface{})
 
-	//fmt.Println("and the error is... ", err.Error())
+	go updateVideo(c, yt, 1, post)
 
-	if err == nil {
+	result := <-c
+
+	//Assert the error
+	_, found := result.(error)
+	if !found {
 		t.Errorf("YouTube error expected")
 	}
 

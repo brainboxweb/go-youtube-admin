@@ -85,27 +85,34 @@ func update() {
 	yt := MyYouTube{}
 	posts := getPosts(postsFile)
 
+	c := make(chan interface{})
+
 	for k, post := range posts {
+		go updateVideo(c, yt, k, post)
+	}
 
-		fmt.Println("Updating" + string(k) + post.Title)
-
-		err := updateVideo(yt, k, post)
-
-		if err != nil {
-			fmt.Println("Update failed", err.Error())
-		}
+	for i := 0; i < len(posts); i++ {
+		result := <-c
+		fmt.Println(result)
 	}
 
 }
 
-func updateVideo(yt YouTuber, index int, post Post) error {
+func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 
 	videoId := post.YouTubeData.Id
 	video := getVideo(videoId)
 
 	updateSnippet(video, index, post)
 
-	return yt.persistVideo(video)
+	err := yt.persistVideo(video)
+
+	if err != nil {
+		c <- err
+	} else {
+		c <- "Updated " + string(index) + " " + post.Title
+	}
+
 }
 
 func getVideo(videoID string) *youtube.Video {
@@ -257,7 +264,6 @@ func convertYAML(input []byte) map[int]Post {
 	return posts
 }
 
-
 func parseTemplate(post Post) string {
 
 	t := template.New("Post template") // Create a template.
@@ -272,11 +278,6 @@ func parseTemplate(post Post) string {
 
 	return buff.String()
 }
-
-
-
-
-
 
 const templateYouTube = `{{.YouTubeData.Body}}
 
