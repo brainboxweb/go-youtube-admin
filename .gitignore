@@ -1,1 +1,6 @@
-backup/youtube*
+backup/**
+backup/!.gitkeep
+
+data/posts.yml
+
+request.token

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"code.google.com/p/google-api-go-client/youtube/v3"
+	"errors"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -87,9 +90,8 @@ func TestUnmarshalYAML(t *testing.T) {
 
 func TestReadYAMLFile(t *testing.T) {
 
-	data := readYAMLFile("posts-test.yml")
+	data := readYAMLFile("data/posts-test.yml")
 
-	//Not sure what to test!
 	if data == nil {
 		t.Error("Failed to read YAML file")
 	}
@@ -98,20 +100,7 @@ func TestReadYAMLFile(t *testing.T) {
 
 func TestGetPosts(t *testing.T) {
 
-	getPosts("posts.yml") //Just a test for parsing
-
-	//fmt.Println(posts)
-	//
-	//for k, post := range posts{
-	//	fmt.Println(k, post.Title)
-	//	fmt.Println(post.Description)
-	//	fmt.Println(post.Slug)
-	//	fmt.Println(post.Date)
-	//	fmt.Println(post.YouTubeId)
-	//	fmt.Println(post.Image)
-	//	fmt.Println(post.Body)
-	//	fmt.Println(post.Transcript)
-	//}
+	getPosts("data/posts.yml") //Just a test for parsing
 }
 
 func TestParseTemplate(t *testing.T) {
@@ -146,17 +135,70 @@ On more than one line if necessary.`,
 
 }
 
-//
-//func TestGetAndParsePosts(t *testing.T) {
-//
-//	posts := getPosts("posts.yml")
-//
-//	for _, post := range posts{
-//		fmt.Println("========================================")
-//		fmt.Println(parseTemplate(post))
-//	}
-//
-//}
+func TestGetVideo(t *testing.T) {
+
+	video := getVideo("EHoyDH1cYwM")
+
+	if !strings.Contains(video.Snippet.Title, "Jira") {
+		t.Errorf("Video title does not contain 'Jira'")
+	}
+}
+
+
+type FakeYouTube struct {
+	Err error
+}
+
+func (yt FakeYouTube) persistVideo(*youtube.Video) error {
+
+	return yt.Err
+}
+
+
+func TestUpdateVideo(t *testing.T) {
+
+	post := Post{
+		Title: "This is the Title of the Post",
+		YouTubeData: YouTubeData{
+			Id:    "EHoyDH1cYwM",
+			Title: "The original Youtube title",
+			Body: "Thsi si the body om the post/youtube item",
+		},
+		Body: "this is the body of the POST item",
+	}
+
+	yt := FakeYouTube{}
+
+	err := updateVideo(yt, 1, post)
+	if err != nil {
+		t.Errorf("Video not updated", err.Error())
+	}
+
+}
+
+func TestUpdateVideoErrorCondition(t *testing.T) {
+
+	post := Post{
+		Title: "This is the Title of the Post",
+		YouTubeData: YouTubeData{
+			Id:    "EHoyDH1cYwM",
+			Title: "The original Youtube title",
+		},
+	}
+
+	yt := FakeYouTube{
+		Err: errors.New("Call to YoutTube Failed"),
+	}
+
+	err := updateVideo(yt, 1, post)
+
+	//fmt.Println("and the error is... ", err.Error())
+
+	if err == nil {
+		t.Errorf("YouTube error expected")
+	}
+
+}
 
 const parsed_1 = `The body for YouTube purposes.
 
@@ -165,7 +207,9 @@ On more than one line if necessary.
 
 _________________
 
-"Development That Pays" is a weekly video that takes a business-focussed look at what's working now in software development. If you business depends on software development, we'd love to have you subscribe and join us!
+"Development That Pays" is a weekly video that takes a business-focused look at what's working now in software development.
+
+If your business depends on software development, we'd love to have you subscribe and join us!
 
 SUBSCRIBE!
 -- http://www.developmentthatpays.com/-/subscribe
@@ -173,6 +217,10 @@ SUBSCRIBE!
 LET'S CONNECT!
 -- https://www.facebook.com/DevelopmentThatPays/
 -- https://twitter.com/DevThatPays
+
+_________________
+
+
 
 MUSIC
 -- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186

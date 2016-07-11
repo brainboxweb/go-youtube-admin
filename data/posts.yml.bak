@@ -1759,7 +1759,6 @@
             body: |-
                 The body for YouTube purposes
 
-
     body: |-
 
         Here's a Recruitment Funnel that does a great job of balancing efficiency and effectiveness:
@@ -6770,8 +6769,6 @@
         title: TDD vs BDD
         description: Can the principles of Test Driven Development (TDD) and Behaviour Driven Development (BDD) be applied to a simple DIY challenge?
         date: 2016-06-22 7:05
-    
-        
 
         youtubedata:
             id: 4QFYTQy47yA
@@ -6799,7 +6796,6 @@
 
 
         transcript: |-
-
 
 
             I tried to hang this shelf on this wall.
@@ -6963,17 +6959,13 @@
         title: Agile Product Ownership
         description: A perfect primer on Product Ownership from Henrik Kniberg
         date: 2016-06-29 7:05
-    
-        
         youtubedata:
             id: 3qP27HEkHE8
             music:
                   - "260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"
             body: |-
                 The body for YouTube purposes
-    
 
-        
         
         body: |-
 
@@ -7038,3 +7030,30 @@
             That's it for this time. Join me next time for more Product Owner-related loveliness.
 
 
+43:
+        slug: in-praise-of-the-product-owner
+        title: In Praise of the Product Owner
+        description: Who has the hardest time "being Agile"?
+        date: 2016-07-06 14:05
+        youtubedata:
+            id: D0Ax7eJuNX8
+            music:
+            body: |-
+
+        body: |-
+
+            Who has the toughest time "Being Agile"?
+
+            - Is it the Dev Team?
+            - Is it the Lead Developer?
+            - What about the Business Owner?
+            - Or is it... the **Product Owner**?
+
+            Arguably, it's the Product Owner that has the toughest job "being Agile".
+            Building software in small, iterative cycles is easy to "sell" to a development team.
+
+            But it takes nerves of steel on behalf of the **Product Owner** to trust that she doesn't
+            get stuck with a bare-bones partial product.
+
+        transcript: |-
+            (To follow)

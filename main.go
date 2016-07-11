@@ -11,7 +11,11 @@ import (
 	"os"
 	"text/template"
 	"time"
+	//"sort"
+	//"strings"
 )
+
+var postsFile = "data/posts.yml"
 
 func main() {
 
@@ -24,12 +28,36 @@ func main() {
 			if c.Args().Get(0) == "backup" {
 				backup()
 			}
+
+			//if c.Args().Get(0) == "populateyoutube" {
+			//	populateyoutube()
+			//}
+
+			if c.Args().Get(0) == "update" {
+				update()
+			}
 		}
 
 		return nil
 	}
 
 	app.Run(os.Args)
+}
+
+//YouTuber is an interface for
+type YouTuber interface {
+	persistVideo(*youtube.Video) error
+}
+
+type MyYouTube struct{} //@todo - rename this
+
+func (MyYouTube) persistVideo(video *youtube.Video) error {
+
+	service := getService()
+	call := service.Videos.Update("snippet", video)
+	_, err := call.Do()
+
+	return err
 }
 
 func backup() {
@@ -50,6 +78,55 @@ func backup() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+}
+
+func update() {
+
+	yt := MyYouTube{}
+	posts := getPosts(postsFile)
+
+	for k, post := range posts {
+
+		fmt.Println("Updating" + string(k) + post.Title)
+
+		err := updateVideo(yt, k, post)
+
+		if err != nil {
+			fmt.Println("Update failed", err.Error())
+		}
+	}
+
+}
+
+func updateVideo(yt YouTuber, index int, post Post) error {
+
+	videoId := post.YouTubeData.Id
+	video := getVideo(videoId)
+
+	updateSnippet(video, index, post)
+
+	return yt.persistVideo(video)
+}
+
+func getVideo(videoID string) *youtube.Video {
+
+	service := getService()
+
+	call := service.Videos.List("snippet").Id(videoID)
+
+	response, err := call.Do()
+	if err != nil {
+		// The channels.list method call returned an error.
+		log.Fatalf("Error making API call to get video  data: %v", err.Error())
+	}
+
+	return response.Items[0]
+}
+
+func updateSnippet(video *youtube.Video, index int, post Post) {
+
+	video.Snippet.Title = fmt.Sprintf("%s - DTP #%d", post.Title, index)
+	video.Snippet.Description = parseTemplate(post)
 }
 
 func getYouTubeData() []YouTubeData {
@@ -118,6 +195,8 @@ func getYouTubeData() []YouTubeData {
 
 func getService() *youtube.Service {
 
+	//@TODO - ADD SYNC.ONCE
+
 	client, err := buildOAuthHTTPClient(youtube.YoutubeScope)
 	if err != nil {
 		log.Fatalf("Error building OAuth client: %v", err)
@@ -129,34 +208,6 @@ func getService() *youtube.Service {
 	}
 
 	return service
-}
-
-func updateSignoff(service *youtube.Service, id string) {
-
-	//GET the video details
-	call := service.Videos.List("snippet").Id(id)
-	videoResponse, err := call.Do()
-	if err != nil {
-		// The channels.list method call returned an error.
-		log.Fatalf("Error making API call to get video: %v", err.Error())
-	}
-	for _, videoItem := range videoResponse.Items {
-
-		//description := videoItem.Snippet.Description
-
-		videoItem.Snippet.Description += "+++"
-
-		//Try an update
-		call := service.Videos.Update("snippet", videoItem)
-		_, err := call.Do()
-		if err != nil {
-			// The channels.list method call returned an error.
-			log.Fatalf("Error making API call to UPDATE video: %v", err.Error())
-		}
-
-		return
-	}
-
 }
 
 func getPosts(postsFle string) map[int]Post {
@@ -173,7 +224,6 @@ func readYAMLFile(filename string) []byte {
 
 	if err != nil {
 		log.Fatalf("Failed to read YML file : %v", err.Error())
-
 	}
 
 	return data
@@ -207,11 +257,6 @@ func convertYAML(input []byte) map[int]Post {
 	return posts
 }
 
-//type templateHandler struct {
-//	once     sync.Once
-//	filename string
-//	templ    *template.Template
-//}
 
 func parseTemplate(post Post) string {
 
@@ -228,12 +273,19 @@ func parseTemplate(post Post) string {
 	return buff.String()
 }
 
+
+
+
+
+
 const templateYouTube = `{{.YouTubeData.Body}}
 
 
 _________________
 
-"Development That Pays" is a weekly video that takes a business-focussed look at what's working now in software development. If you business depends on software development, we'd love to have you subscribe and join us!
+"Development That Pays" is a weekly video that takes a business-focused look at what's working now in software development.
+
+If your business depends on software development, we'd love to have you subscribe and join us!
 
 SUBSCRIBE!
 -- http://www.developmentthatpays.com/-/subscribe
@@ -241,6 +293,10 @@ SUBSCRIBE!
 LET'S CONNECT!
 -- https://www.facebook.com/DevelopmentThatPays/
 -- https://twitter.com/DevThatPays
+
+_________________
+
+
 
 {{if .YouTubeData.Music}}MUSIC{{ range .YouTubeData.Music }}
 -- {{ . }}{{ end }}
