@@ -3,7 +3,6 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -12,8 +11,7 @@ import (
 func TestUnmarshalYAML(t *testing.T) {
 
 	input := `
-1:
-    slug: the-slug
+1-the-slug:
     title: The title
     description: "The description"
     date: 2015-08-20
@@ -28,8 +26,7 @@ func TestUnmarshalYAML(t *testing.T) {
     transcript: |-
         This is the transcript.
 
-2:
-    slug: the-slug-2
+2-the-slug-2:
     title: The title two
     description: "The description two"
     date: 2015-08-27
@@ -48,7 +45,6 @@ func TestUnmarshalYAML(t *testing.T) {
 		Music: []string{"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186"},
 	}
 	post1 := Post{
-		Slug:        "the-slug",
 		Title:       "The title",
 		Description: "The description",
 		Date:        "2015-08-20",
@@ -62,7 +58,6 @@ func TestUnmarshalYAML(t *testing.T) {
 		Body: "The body for YouTube purposes. Again.",
 	}
 	post2 := Post{
-		Slug:        "the-slug-2",
 		Title:       "The title two",
 		Description: "The description two",
 		Date:        "2015-08-27",
@@ -71,21 +66,21 @@ func TestUnmarshalYAML(t *testing.T) {
 		Transcript:  "This is the transcript. Again.",
 	}
 
-	expected := map[int]Post{}
+	expected := map[string]Post{}
 
-	expected[1] = post1
-	expected[2] = post2
+	expected["1-the-slug"] = post1
+	expected["2-the-slug-2"] = post2
 
 	actual := convertYAML([]byte(input))
 
-	eq := reflect.DeepEqual(expected[1], actual[1])
+	eq := reflect.DeepEqual(expected["1-the-slug"], actual["1-the-slug"])
 	if !eq {
-		t.Errorf("expected %d, \n actual %d", expected[1], actual[1])
+		t.Errorf("expected %d, \n actual %d", expected["1-the-slug"], actual["1-the-slug"])
 	}
 
-	eq = reflect.DeepEqual(expected[2], actual[2])
+	eq = reflect.DeepEqual(expected["2-the-slug-2"], actual["2-the-slug-2"])
 	if !eq {
-		t.Errorf("expected %d, \n actual %d", expected[2], actual[2])
+		t.Errorf("expected %d, \n actual %d", expected["2-the-slug-2"], actual["2-the-slug-2"])
 	}
 }
 
@@ -107,7 +102,6 @@ func TestGetPosts(t *testing.T) {
 func TestParseTemplate(t *testing.T) {
 
 	post := Post{
-		Slug:        "the-slug",
 		Title:       "The title",
 		Description: "The description.",
 		Date:        "2015-08-20",

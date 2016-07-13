@@ -9,10 +9,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"text/template"
 	"time"
-	//"sort"
-	//"strings"
 )
 
 var postsFile = "data/posts.yml"
@@ -28,10 +28,6 @@ func main() {
 			if c.Args().Get(0) == "backup" {
 				backup()
 			}
-
-			//if c.Args().Get(0) == "populateyoutube" {
-			//	populateyoutube()
-			//}
 
 			if c.Args().Get(0) == "update" {
 				update()
@@ -87,7 +83,14 @@ func update() {
 
 	c := make(chan interface{})
 
-	for k, post := range posts {
+	for slug, post := range posts {
+
+		parts := strings.Split(slug, "-")
+		k, err := strconv.Atoi(parts[0])
+		if err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
 		go updateVideo(c, yt, k, post)
 	}
 
@@ -217,7 +220,7 @@ func getService() *youtube.Service {
 	return service
 }
 
-func getPosts(postsFle string) map[int]Post {
+func getPosts(postsFle string) map[string]Post {
 
 	data := readYAMLFile(postsFle)
 	posts := convertYAML(data)
@@ -246,7 +249,6 @@ type YouTubeData struct {
 type Post struct {
 	Title       string
 	Description string
-	Slug        string
 	Date        string
 	YouTubeData YouTubeData
 	Image       string
@@ -254,8 +256,8 @@ type Post struct {
 	Transcript  string
 }
 
-func convertYAML(input []byte) map[int]Post {
-	posts := make(map[int]Post)
+func convertYAML(input []byte) map[string]Post {
+	posts := make(map[string]Post)
 
 	err := yaml.Unmarshal(input, &posts)
 	if err != nil {
