@@ -148,6 +148,22 @@ func (yt FakeYouTube) persistVideo(*youtube.Video) error {
 	return yt.Err
 }
 
+//
+//func TestUpdateSnippet(t *testing.T) {
+//
+//	post := Post{
+//		Title: "This is the Title of the Post",
+//		YouTubeData: YouTubeData{
+//			Id:    "EHoyDH1cYwM",
+//			Title: "The original Youtube title",
+//			Body:  "Thsi si the body om the post/youtube item",
+//		},
+//		Body: "this is the body of the POST item",
+//	}
+//
+//	updateSnippet()
+//}
+
 func TestUpdateVideo(t *testing.T) {
 
 	post := Post{

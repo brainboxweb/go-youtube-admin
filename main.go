@@ -8,6 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -40,7 +41,7 @@ func main() {
 	app.Run(os.Args)
 }
 
-//YouTuber is an interface for
+//YouTuber is an interface for the YouTube client
 type YouTuber interface {
 	persistVideo(*youtube.Video) error
 }
@@ -78,8 +79,12 @@ func backup() {
 
 func update() {
 
+	//Update the local file
+	updateLocalFile()
+
 	yt := MyYouTube{}
-	posts := getPosts(postsFile)
+	posts := getPosts(
+		postsFile)
 
 	c := make(chan interface{})
 
@@ -101,19 +106,48 @@ func update() {
 
 }
 
+func updateLocalFile() {
+
+	client := &http.Client{}
+
+	resp, err := client.Get("http://www.developmentthatpays.com/" + postsFile)
+
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	err = ioutil.WriteFile(postsFile, data, 0644)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+}
+
 func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 
 	videoId := post.YouTubeData.Id
 	video := getVideo(videoId)
 
-	updateSnippet(video, index, post)
+	updated := updateSnippet(video, index, post)
+
+	if !updated {
+		c <- fmt.Sprintf("NO CHANGE - %d %s", index, post.Title)
+		return
+	}
 
 	err := yt.persistVideo(video)
 
 	if err != nil {
 		c <- err
 	} else {
-		c <- "Updated " + string(index) + " " + post.Title
+		c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
 	}
 
 }
@@ -133,10 +167,22 @@ func getVideo(videoID string) *youtube.Video {
 	return response.Items[0]
 }
 
-func updateSnippet(video *youtube.Video, index int, post Post) {
+func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
-	video.Snippet.Title = fmt.Sprintf("%s - DTP #%d", post.Title, index)
-	video.Snippet.Description = parseTemplate(post)
+	updated = false
+
+	newTitle := fmt.Sprintf("%s - DTP #%d", post.Title, index)
+	if video.Snippet.Title != newTitle {
+		video.Snippet.Title = newTitle
+		updated = true
+	}
+
+	newDescription := strings.TrimSpace(parseTemplate(post))
+	if video.Snippet.Description != newDescription {
+		video.Snippet.Description = newDescription
+		updated = true
+	}
+	return updated
 }
 
 func getYouTubeData() []YouTubeData {
