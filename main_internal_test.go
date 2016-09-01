@@ -220,23 +220,24 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 
 }
 
-const parsed_1 = `The body for YouTube purposes.
+const parsed_1 = `http://www.developmentthatpays.com The body for YouTube purposes.
 
 On more than one line if necessary.
 
 
 _________________
 
-"Development That Pays" is a weekly video that takes a business-focused look at what's working now in software development.
+"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
 
-If your business depends on software development, we'd love to have you subscribe and join us!
+If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
 
 SUBSCRIBE!
 -- http://www.developmentthatpays.com/-/subscribe
 
 LET'S CONNECT!
--- https://www.facebook.com/DevelopmentThatPays/
--- https://twitter.com/DevThatPays
+-- Facebook: https://www.facebook.com/DevelopmentThatPays/
+-- Twitter: https://twitter.com/DevThatPays
+-- LinkedIn: https://uk.linkedin.com/in/garystraughan
 
 _________________
 

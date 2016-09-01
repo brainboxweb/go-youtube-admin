@@ -164,7 +164,12 @@ func getVideo(videoID string) *youtube.Video {
 		log.Fatalf("Error making API call to get video  data: %v", err.Error())
 	}
 
-	return response.Items[0]
+	if len(response.Items) > 0 {
+		return response.Items[0]
+	}
+
+	panic("VIDOE id not found:"+videoID)
+
 }
 
 func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
@@ -327,21 +332,22 @@ func parseTemplate(post Post) string {
 	return buff.String()
 }
 
-const templateYouTube = `{{.YouTubeData.Body}}
+const templateYouTube = `http://www.developmentthatpays.com {{.YouTubeData.Body}}
 
 
 _________________
 
-"Development That Pays" is a weekly video that takes a business-focused look at what's working now in software development.
+"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
 
-If your business depends on software development, we'd love to have you subscribe and join us!
+If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
 
 SUBSCRIBE!
 -- http://www.developmentthatpays.com/-/subscribe
 
 LET'S CONNECT!
--- https://www.facebook.com/DevelopmentThatPays/
--- https://twitter.com/DevThatPays
+-- Facebook: https://www.facebook.com/DevelopmentThatPays/
+-- Twitter: https://twitter.com/DevThatPays
+-- LinkedIn: https://uk.linkedin.com/in/garystraughan
 
 _________________
 
