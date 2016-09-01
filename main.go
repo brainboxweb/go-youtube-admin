@@ -168,7 +168,7 @@ func getVideo(videoID string) *youtube.Video {
 		return response.Items[0]
 	}
 
-	panic("VIDOE id not found:"+videoID)
+	panic("Video id not found:" + videoID)
 
 }
 
