@@ -75,12 +75,12 @@ func TestUnmarshalYAML(t *testing.T) {
 
 	eq := reflect.DeepEqual(expected["1-the-slug"], actual["1-the-slug"])
 	if !eq {
-		t.Errorf("expected %d, \n actual %d", expected["1-the-slug"], actual["1-the-slug"])
+		t.Errorf("expected %s, \n actual %s", expected["1-the-slug"], actual["1-the-slug"])
 	}
 
 	eq = reflect.DeepEqual(expected["2-the-slug-2"], actual["2-the-slug-2"])
 	if !eq {
-		t.Errorf("expected %d, \n actual %d", expected["2-the-slug-2"], actual["2-the-slug-2"])
+		t.Errorf("expected %s, \n actual %s", expected["2-the-slug-2"], actual["2-the-slug-2"])
 	}
 }
 
@@ -124,8 +124,7 @@ On more than one line if necessary.`,
 	expected := parsed_1
 
 	if actual != expected {
-		t.Errorf("expected:\n %d, \n\n\n actual:\n %d", expected, actual)
-
+		t.Errorf("expected:\n %s, \n\n\n actual:\n %s", expected, actual)
 	}
 
 }
@@ -187,7 +186,7 @@ func TestUpdateVideo(t *testing.T) {
 	//Assert the error
 	err, found := result.(error)
 	if found {
-		t.Errorf("Video not updated", err.Error())
+		t.Error("Video not updated", err.Error())
 	}
 
 }

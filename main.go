@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 )
@@ -251,18 +252,53 @@ func getService() *youtube.Service {
 
 	//@TODO - ADD SYNC.ONCE
 
-	client, err := buildOAuthHTTPClient(youtube.YoutubeScope)
-	if err != nil {
-		log.Fatalf("Error building OAuth client: %v", err)
-	}
+	var once sync.Once
 
-	service, err := youtube.New(client)
-	if err != nil {
-		log.Fatalf("Error creating YouTube client: %v", err)
-	}
+	once.Do(func() {
+		client, err := buildOAuthHTTPClient(youtube.YoutubeScope)
+		if err != nil {
+			log.Fatalf("Error building OAuth client: %v", err)
+		}
 
-	return service
+		service, err := youtube.New(client)
+		if err != nil {
+			log.Fatalf("Error creating YouTube client: %v", err)
+		}
+
+		return service
+
+	})
+
 }
+
+//
+//// handle a web request
+//func handleRequest(w http.ResponseWriter, r *http.Request) {
+//	once.Do(func() {
+//		// initialisation:
+//		// load templates or something
+//	})
+//	// TODO: respond
+//}
+//
+//func ExampleOnce() {
+//	var once sync.Once
+//	onceBody := func() {
+//		fmt.Println("Only once")
+//	}
+//	done := make(chan bool)
+//	for i := 0; i < 10; i++ {
+//		go func() {
+//			once.Do(onceBody)
+//			done <- true
+//		}()
+//	}
+//	for i := 0; i < 10; i++ {
+//		<-done
+//	}
+//	// Output:
+//	// Only once
+//}
 
 func getPosts(postsFle string) map[string]Post {
 
