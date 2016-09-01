@@ -47,7 +47,7 @@ type YouTuber interface {
 }
 
 type MyYouTube struct{} //@todo - rename this
-
+//Implement the YouTuber interface
 func (MyYouTube) persistVideo(video *youtube.Video) error {
 
 	service := getService()
@@ -79,8 +79,7 @@ func backup() {
 
 func update() {
 
-	//Update the local file
-	updateLocalFile()
+	fetchRemotePostsData()
 
 	yt := MyYouTube{}
 	posts := getPosts(
@@ -106,7 +105,7 @@ func update() {
 
 }
 
-func updateLocalFile() {
+func fetchRemotePostsData() {
 
 	client := &http.Client{}
 
@@ -136,20 +135,17 @@ func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 	video := getVideo(videoId)
 
 	updated := updateSnippet(video, index, post)
-
 	if !updated {
 		c <- fmt.Sprintf("NO CHANGE - %d %s", index, post.Title)
 		return
 	}
 
 	err := yt.persistVideo(video)
-
 	if err != nil {
 		c <- err
-	} else {
-		c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
 	}
 
+	c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
 }
 
 func getVideo(videoID string) *youtube.Video {
@@ -157,19 +153,16 @@ func getVideo(videoID string) *youtube.Video {
 	service := getService()
 
 	call := service.Videos.List("snippet").Id(videoID)
-
 	response, err := call.Do()
 	if err != nil {
-		// The channels.list method call returned an error.
-		log.Fatalf("Error making API call to get video  data: %v", err.Error())
+		log.Fatalf("Error making API call to get video  data: %v", err.Error()) // The channels.list method call returned an error.
 	}
 
-	if len(response.Items) > 0 {
-		return response.Items[0]
+	if len(response.Items) < 1 {
+		panic("Video id not found:" + videoID)
 	}
 
-	panic("Video id not found:" + videoID)
-
+	return response.Items[0]
 }
 
 func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
