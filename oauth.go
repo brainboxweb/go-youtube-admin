@@ -161,8 +161,7 @@ func buildOAuthHTTPClient(scope string) (*http.Client, error) {
 			fmt.Println("Visit the URL below to get a code.",
 				" This program will pause until the site is visted.")
 		} else {
-			fmt.Println("Your browser has been opened to an authorization URL.",
-				" This program will resume once authorization has been provided.\n")
+			fmt.Println("Your browser has been opened to an authorization URL.", " This program will resume once authorization has been provided.")
 		}
 		fmt.Println(url)
 

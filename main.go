@@ -248,7 +248,7 @@ func getYouTubeData() []YouTubeData {
 
 }
 
-func getService() *youtube.Service {
+func getService() (service *youtube.Service) {
 
 	//@TODO - ADD SYNC.ONCE
 
@@ -260,45 +260,14 @@ func getService() *youtube.Service {
 			log.Fatalf("Error building OAuth client: %v", err)
 		}
 
-		service, err := youtube.New(client)
+		service, err = youtube.New(client)
 		if err != nil {
 			log.Fatalf("Error creating YouTube client: %v", err)
 		}
 
-		return service
-
 	})
-
+	return service
 }
-
-//
-//// handle a web request
-//func handleRequest(w http.ResponseWriter, r *http.Request) {
-//	once.Do(func() {
-//		// initialisation:
-//		// load templates or something
-//	})
-//	// TODO: respond
-//}
-//
-//func ExampleOnce() {
-//	var once sync.Once
-//	onceBody := func() {
-//		fmt.Println("Only once")
-//	}
-//	done := make(chan bool)
-//	for i := 0; i < 10; i++ {
-//		go func() {
-//			once.Do(onceBody)
-//			done <- true
-//		}()
-//	}
-//	for i := 0; i < 10; i++ {
-//		<-done
-//	}
-//	// Output:
-//	// Only once
-//}
 
 func getPosts(postsFle string) map[string]Post {
 
@@ -370,19 +339,16 @@ _________________
 
 If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
 
-SUBSCRIBE!
--- http://www.developmentthatpays.com/-/subscribe
-
-LET'S CONNECT!
--- Facebook: https://www.facebook.com/DevelopmentThatPays/
--- Twitter: https://twitter.com/DevThatPays
--- LinkedIn: https://uk.linkedin.com/in/garystraughan
+SUBSCRIBE! ---->>> http://www.developmentthatpays.com/-/subscribe
+{{if .YouTubeData.Music}}
 
 _________________
 
-
-
-{{if .YouTubeData.Music}}MUSIC{{ range .YouTubeData.Music }}
+MUSIC{{ range .YouTubeData.Music }}
 -- {{ . }}{{ end }}
 {{ end }}
-`
+
+_________________
+
+https://www.youtube.com/watch?v={{.YouTubeData.Id}}
+https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I`

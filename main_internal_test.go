@@ -230,20 +230,17 @@ _________________
 
 If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
 
-SUBSCRIBE!
--- http://www.developmentthatpays.com/-/subscribe
+SUBSCRIBE! ---->>> http://www.developmentthatpays.com/-/subscribe
 
-LET'S CONNECT!
--- Facebook: https://www.facebook.com/DevelopmentThatPays/
--- Twitter: https://twitter.com/DevThatPays
--- LinkedIn: https://uk.linkedin.com/in/garystraughan
 
 _________________
-
-
 
 MUSIC
 -- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
 -- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
 
-`
+
+_________________
+
+https://www.youtube.com/watch?v=JkVr2DJM3Ac
+https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I`
