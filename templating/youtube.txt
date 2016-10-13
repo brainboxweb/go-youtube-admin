@@ -1,0 +1,23 @@
+http://www.developmentthatpays.com {{.Body}}
+
+
+_________________
+
+"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
+
+If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
+
+SUBSCRIBE! http://www.developmentthatpays.com/-/subscribe
+
+
+{{if .Music}}_________________
+
+MUSIC{{ range .Music }}
+-- {{ . }}{{ end }}
+{{ end }}
+
+_________________
+
+https://www.youtube.com/watch?v={{.Id}}
+https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
+{{.Transcript}}
