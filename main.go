@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"fmt"
 	"github.com/urfave/cli"
@@ -13,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"text/template"
+	"github.com/brainboxweb/go-youtube-admin/templating"
 	"time"
 )
 
@@ -143,7 +142,8 @@ func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 
 	err := yt.persistVideo(video)
 	if err != nil {
-		c <- fmt.Sprintf("ERROR - %d %s - %s", index, post.Title, err)
+		//c <- fmt.Sprintf("ERROR - %d %s - %s", index, post.Title, err)
+		c <- err //Not great - don't know the source of the error
 	}
 
 	c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
@@ -176,10 +176,10 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		updated = true
 	}
 
-	newDescription := strings.TrimSpace(parseTemplate(post))
-
-	//Trim to
-	newDescription = fmt.Sprintf("%.5000s",newDescription)
+	newDescription, err := templating.GetYouTubeBody(post.YouTubeData.Id, post.YouTubeData.Body, post.Transcript, post.YouTubeData.Music, "templating/youtube.txt")
+	if err != nil {
+		panic("Error experienced when creating newDescription")
+	}
 
 	if video.Snippet.Description != newDescription {
 		video.Snippet.Description = newDescription
@@ -319,43 +319,44 @@ func convertYAML(input []byte) map[string]Post {
 	return posts
 }
 
-func parseTemplate(post Post) string {
-
-	t := template.New("Post template") // Create a template.
-	t, err := t.Parse(templateYouTube) // Parse template file.
-	if err != nil {
-		log.Fatal("error: %v", err)
-	}
-
-	var buff bytes.Buffer
-
-	t.Execute(&buff, post)
-
-	return buff.String()
-}
-
-const templateYouTube = `http://www.developmentthatpays.com {{.YouTubeData.Body}}
-
-
-
-_________________
-
-"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
-
-If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
-
-SUBSCRIBE! http://www.developmentthatpays.com/-/subscribe
-
-
-{{if .YouTubeData.Music}}_________________
-
-MUSIC{{ range .YouTubeData.Music }}
--- {{ . }}{{ end }}
-{{ end }}
-
-_________________
-
-https://www.youtube.com/watch?v={{.YouTubeData.Id}}
-https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
-{{.Transcript}}
-`
+//
+//func parseTemplate(post Post) string {
+//
+//	t := template.New("Post template") // Create a template.
+//	t, err := t.Parse(templateYouTube) // Parse template file.
+//	if err != nil {
+//		log.Fatal("error: %v", err)
+//	}
+//
+//	var buff bytes.Buffer
+//
+//	t.Execute(&buff, post)
+//
+//	return buff.String()
+//}
+//
+//const templateYouTube = `http://www.developmentthatpays.com {{.YouTubeData.Body}}
+//
+//
+//
+//_________________
+//
+//"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
+//
+//If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
+//
+//SUBSCRIBE! http://www.developmentthatpays.com/-/subscribe
+//
+//
+//{{if .YouTubeData.Music}}_________________
+//
+//MUSIC{{ range .YouTubeData.Music }}
+//-- {{ . }}{{ end }}
+//{{ end }}
+//
+//_________________
+//
+//https://www.youtube.com/watch?v={{.YouTubeData.Id}}
+//https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
+//{{.Transcript}}
+//`

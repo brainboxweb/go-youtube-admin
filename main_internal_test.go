@@ -3,6 +3,7 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -95,42 +96,10 @@ func TestReadYAMLFile(t *testing.T) {
 }
 
 func TestGetPosts(t *testing.T) {
-
 	getPosts("data/posts.yml") //Just a test for parsing
 }
 
-func TestParseTemplate(t *testing.T) {
-
-	post := Post{
-		Title:       "The title",
-		Description: "The description.",
-		Date:        "2015-08-20",
-		YouTubeData: YouTubeData{
-			Id: "JkVr2DJM3Ac",
-			Body: `The body for YouTube purposes.
-
-On more than one line if necessary.`,
-			Music: []string{
-				"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186",
-				"260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186",
-			},
-		},
-		Body:       "This is the body",
-		Transcript: "This is the transcript.",
-	}
-
-	actual := parseTemplate(post)
-
-	expected := parsed_1
-
-	if actual != expected {
-		t.Errorf("expected:\n %s, \n\n\n actual:\n %s", expected, actual)
-	}
-
-}
-
 func TestGetVideo(t *testing.T) {
-
 	video := getVideo("EHoyDH1cYwM")
 
 	if !strings.Contains(video.Snippet.Title, "Jira") {
@@ -146,22 +115,6 @@ func (yt FakeYouTube) persistVideo(*youtube.Video) error {
 
 	return yt.Err
 }
-
-//
-//func TestUpdateSnippet(t *testing.T) {
-//
-//	post := Post{
-//		Title: "This is the Title of the Post",
-//		YouTubeData: YouTubeData{
-//			Id:    "EHoyDH1cYwM",
-//			Title: "The original Youtube title",
-//			Body:  "Thsi si the body om the post/youtube item",
-//		},
-//		Body: "this is the body of the POST item",
-//	}
-//
-//	updateSnippet()
-//}
 
 func TestUpdateVideo(t *testing.T) {
 
@@ -182,13 +135,11 @@ func TestUpdateVideo(t *testing.T) {
 	go updateVideo(c, yt, 1, post)
 
 	result := <-c
-
 	//Assert the error
 	err, found := result.(error)
 	if found {
 		t.Error("Video not updated", err.Error())
 	}
-
 }
 
 func TestUpdateVideoErrorCondition(t *testing.T) {
@@ -214,34 +165,8 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 
 	//Assert the error
 	_, found := result.(error)
+
 	if !found {
 		t.Errorf("YouTube error expected")
 	}
-
 }
-
-const parsed_1 = `http://www.developmentthatpays.com The body for YouTube purposes.
-
-On more than one line if necessary.
-
-
-_________________
-
-"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
-
-If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
-
-SUBSCRIBE! ---->>> http://www.developmentthatpays.com/-/subscribe
-
-
-_________________
-
-MUSIC
--- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
--- 260809 Funky Nurykabe: http://ccmixter.org/files/jlbrock44/29186
-
-
-_________________
-
-https://www.youtube.com/watch?v=JkVr2DJM3Ac
-https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I`
