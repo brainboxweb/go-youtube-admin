@@ -199,6 +199,7 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 			Id:    "EHoyDH1cYwM",
 			Title: "The original Youtube title",
 		},
+		Transcript: "Now is the time for all good men to come to the aid",
 	}
 
 	yt := FakeYouTube{

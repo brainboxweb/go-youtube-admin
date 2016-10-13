@@ -143,7 +143,7 @@ func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 
 	err := yt.persistVideo(video)
 	if err != nil {
-		c <- err
+		c <- fmt.Sprintf("ERROR - %d %s - %s", index, post.Title, err)
 	}
 
 	c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
@@ -177,6 +177,10 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 	}
 
 	newDescription := strings.TrimSpace(parseTemplate(post))
+
+	//Trim to
+	newDescription = fmt.Sprintf("%.5000s",newDescription)
+
 	if video.Snippet.Description != newDescription {
 		video.Snippet.Description = newDescription
 		updated = true
@@ -333,16 +337,17 @@ func parseTemplate(post Post) string {
 const templateYouTube = `http://www.developmentthatpays.com {{.YouTubeData.Body}}
 
 
+
 _________________
 
 "Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
 
 If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
 
-SUBSCRIBE! ---->>> http://www.developmentthatpays.com/-/subscribe
-{{if .YouTubeData.Music}}
+SUBSCRIBE! http://www.developmentthatpays.com/-/subscribe
 
-_________________
+
+{{if .YouTubeData.Music}}_________________
 
 MUSIC{{ range .YouTubeData.Music }}
 -- {{ . }}{{ end }}
@@ -351,4 +356,6 @@ MUSIC{{ range .YouTubeData.Music }}
 _________________
 
 https://www.youtube.com/watch?v={{.YouTubeData.Id}}
-https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I`
+https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
+{{.Transcript}}
+`
