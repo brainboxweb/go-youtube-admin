@@ -7,7 +7,14 @@ import (
 )
 
 func TestTemplateNotFound(t *testing.T) {
-	_, err := templating.GetYouTubeBody("idididid", "the Body", "The transcript", []string{}, "404.txt")
+	data := templating.YouTubeData{
+		Id:         "sdsdsdsd",
+		Body:       "the Body",
+		Transcript: "the transcript",
+		TopResult:  "http://www.top.com",
+		Music:      []string{},
+	}
+	_, err := templating.GetYouTubeBody(data, "404.txt")
 	if err == nil {
 		t.Errorf("expected err. Not founc")
 	}
@@ -17,15 +24,27 @@ func TestParse(t *testing.T) {
 	id := "ididididid"
 	body := "the Body"
 	transcript := "The transcript"
+	topResult := "http://number-one-on-google.com"
+	music := []string{}
+	templateFile := "youtube.txt"
 
-	parsed, _ := templating.GetYouTubeBody(id, body, transcript, []string{}, "youtube.txt")
+	data := templating.YouTubeData{
+		Id:         id,
+		Body:       body,
+		Transcript: transcript,
+		TopResult:  topResult,
+		Music:      music,
+	}
+
+	parsed, _ := templating.GetYouTubeBody(data, templateFile)
 
 	testCases := []struct {
 		expected string
 	}{
 		{"http://www.developmentthatpays.com " + body},
 		{"https://www.youtube.com/watch?v=" + id},
-		{parsed},
+		{topResult},
+		{templating.ChannelLink},
 	}
 
 	for _, tc := range testCases {
@@ -40,12 +59,21 @@ func TestParse(t *testing.T) {
 func TestMusic(t *testing.T) {
 
 	id := "ididididid"
-
 	body := "the Body"
 	transcript := "The transcript"
+	topResult := "http://number-one-on-google.com"
 	music := []string{"music1", "music2", "music3"}
+	//templateFile := "youtube.txt"
 
-	parsed, err := templating.GetYouTubeBody(id, body, transcript, music, "youtube.txt")
+	data := templating.YouTubeData{
+		Id:         id,
+		Body:       body,
+		Transcript: transcript,
+		TopResult:  topResult,
+		Music:      music,
+	}
+
+	parsed, err := templating.GetYouTubeBody(data, "youtube.txt")
 	if err != nil {
 		t.Errorf("Error not expected. %s", err.Error())
 	}
@@ -68,9 +96,19 @@ func TestTranscript(t *testing.T) {
 	id := "ididididid"
 	body := "the Body"
 	transcript := longTranscript
+	topResult := "http://number-one-on-google.com"
 	music := []string{"music1", "music2", "music3"}
+	//templateFile := "youtube.txt"
 
-	parsed, err := templating.GetYouTubeBody(id, body, transcript, music, "youtube.txt")
+	data := templating.YouTubeData{
+		Id:         id,
+		Body:       body,
+		Transcript: transcript,
+		TopResult:  topResult,
+		Music:      music,
+	}
+
+	parsed, err := templating.GetYouTubeBody(data, "youtube.txt")
 	if err != nil {
 		t.Errorf("Error not expected. %s", err.Error())
 	}

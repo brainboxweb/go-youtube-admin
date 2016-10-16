@@ -3,6 +3,7 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"fmt"
+	"github.com/brainboxweb/go-youtube-admin/templating"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -12,11 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"github.com/brainboxweb/go-youtube-admin/templating"
 	"time"
+	//"github.com/hashicorp/hcl/hcl/token"
 )
 
-var postsFile = "data/posts.yml"
+const postsFile = "data/posts.yml"
 
 func main() {
 
@@ -176,7 +177,15 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		updated = true
 	}
 
-	newDescription, err := templating.GetYouTubeBody(post.YouTubeData.Id, post.YouTubeData.Body, post.Transcript, post.YouTubeData.Music, "templating/youtube.txt")
+	data := templating.YouTubeData{
+		Id:         post.YouTubeData.Id,
+		Body:       post.YouTubeData.Body,
+		Transcript: post.Transcript,
+		TopResult:  post.TopResult,
+		Music:      post.YouTubeData.Music,
+	}
+
+	newDescription, err := templating.GetYouTubeBody(data, "templating/youtube.txt")
 	if err != nil {
 		panic("Error experienced when creating newDescription")
 	}
@@ -303,6 +312,7 @@ type Post struct {
 	Title       string
 	Description string
 	Date        string
+	TopResult   string
 	YouTubeData YouTubeData
 	Image       string
 	Body        string
@@ -318,45 +328,3 @@ func convertYAML(input []byte) map[string]Post {
 	}
 	return posts
 }
-
-//
-//func parseTemplate(post Post) string {
-//
-//	t := template.New("Post template") // Create a template.
-//	t, err := t.Parse(templateYouTube) // Parse template file.
-//	if err != nil {
-//		log.Fatal("error: %v", err)
-//	}
-//
-//	var buff bytes.Buffer
-//
-//	t.Execute(&buff, post)
-//
-//	return buff.String()
-//}
-//
-//const templateYouTube = `http://www.developmentthatpays.com {{.YouTubeData.Body}}
-//
-//
-//
-//_________________
-//
-//"Development That Pays" is a weekly video that takes a business-focused look at what's working now in Software Development.
-//
-//If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
-//
-//SUBSCRIBE! http://www.developmentthatpays.com/-/subscribe
-//
-//
-//{{if .YouTubeData.Music}}_________________
-//
-//MUSIC{{ range .YouTubeData.Music }}
-//-- {{ . }}{{ end }}
-//{{ end }}
-//
-//_________________
-//
-//https://www.youtube.com/watch?v={{.YouTubeData.Id}}
-//https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
-//{{.Transcript}}
-//`

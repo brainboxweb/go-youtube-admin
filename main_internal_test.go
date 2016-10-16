@@ -3,7 +3,6 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"

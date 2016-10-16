@@ -18,6 +18,4 @@ MUSIC{{ range .Music }}
 
 _________________
 
-https://www.youtube.com/watch?v={{.Id}}
-https://www.youtube.com/playlist?list=PLngnoZX8cAn9TS9axsnjguWgISSGDyb-I
 {{.Transcript}}

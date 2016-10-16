@@ -9,27 +9,31 @@ import (
 )
 
 const MaxCharCount int = 5000
+const ChannelLink = "https://www.youtube.com/c/Developmentthatpays"
 
-type youTubeData struct {
+type YouTubeData struct {
 	Id         string
 	Body       string
 	Transcript string
 	Music      []string
+	TopResult  string
 }
 
-func GetYouTubeBody(id, body, transcript string, music []string, templateFile string) (string, error) {
-	data := youTubeData{
-		id,
-		body,
-		cleanTranscript(transcript),
-		music,
-	}
-	output, err := parseTemplate(data, templateFile)
+func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
+	data.Transcript = cleanTranscript(data.Transcript)
+	body, err := parseTemplate(data, templateFile)
 	if err != nil {
 		return "", err
 	}
-	output = truncate(output, MaxCharCount)
-	return output, nil
+	body = addBottomLinks(data, body)
+	return body, nil
+}
+
+func addBottomLinks(data YouTubeData, body string) string {
+	bottomLinks := fmt.Sprintf(" %d https://www.youtube.com/watch?v=%s %s", ChannelLink, data.Id, data.TopResult)
+	truncateLength := MaxCharCount - len(bottomLinks)
+	body = truncate(body, truncateLength) + bottomLinks
+	return body
 }
 
 func cleanTranscript(s string) string {
@@ -38,7 +42,7 @@ func cleanTranscript(s string) string {
 	return s
 }
 
-func parseTemplate(data youTubeData, templateFile string) (string, error) {
+func parseTemplate(data YouTubeData, templateFile string) (string, error) {
 	t, err := template.ParseFiles(templateFile) // Parse template file.
 	if err != nil {
 		return "", err
@@ -60,7 +64,6 @@ func removeLineBreaks(s string) string {
 	s = re.ReplaceAllString(s, " ")
 	return s
 }
-
 
 //https://github.com/writeas/go-strip-markdown/blob/master/strip.go
 var (
