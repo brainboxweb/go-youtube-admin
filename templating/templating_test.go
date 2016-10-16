@@ -22,7 +22,7 @@ func TestTemplateNotFound(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	id := "ididididid"
-	body := "the Body"
+	body := "\n\nthe Body"
 	transcript := "The transcript"
 	topResult := "http://number-one-on-google.com"
 	music := []string{}
@@ -41,7 +41,7 @@ func TestParse(t *testing.T) {
 	testCases := []struct {
 		expected string
 	}{
-		{"http://www.developmentthatpays.com " + body},
+		{"http://www.developmentthatpays.com the Body"},
 		{"https://www.youtube.com/watch?v=" + id},
 		{topResult},
 		{templating.ChannelLink},
@@ -63,7 +63,6 @@ func TestMusic(t *testing.T) {
 	transcript := "The transcript"
 	topResult := "http://number-one-on-google.com"
 	music := []string{"music1", "music2", "music3"}
-	//templateFile := "youtube.txt"
 
 	data := templating.YouTubeData{
 		Id:         id,
@@ -98,7 +97,6 @@ func TestTranscript(t *testing.T) {
 	transcript := longTranscript
 	topResult := "http://number-one-on-google.com"
 	music := []string{"music1", "music2", "music3"}
-	//templateFile := "youtube.txt"
 
 	data := templating.YouTubeData{
 		Id:         id,

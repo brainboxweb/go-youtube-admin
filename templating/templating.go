@@ -21,6 +21,7 @@ type YouTubeData struct {
 
 func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	data.Transcript = cleanTranscript(data.Transcript)
+	data.Body = strings.Trim(data.Body, "\n ")
 	body, err := parseTemplate(data, templateFile)
 	if err != nil {
 		return "", err
@@ -30,7 +31,7 @@ func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 }
 
 func addBottomLinks(data YouTubeData, body string) string {
-	bottomLinks := fmt.Sprintf(" %d https://www.youtube.com/watch?v=%s %s", ChannelLink, data.Id, data.TopResult)
+	bottomLinks := fmt.Sprintf(" %s https://www.youtube.com/watch?v=%s %s", ChannelLink, data.Id, data.TopResult)
 	truncateLength := MaxCharCount - len(bottomLinks)
 	body = truncate(body, truncateLength) + bottomLinks
 	return body
