@@ -13,6 +13,7 @@ const ChannelLink = "https://www.youtube.com/c/Developmentthatpays"
 
 type YouTubeData struct {
 	Id         string
+	Title      string
 	Body       string
 	Transcript string
 	Music      []string
