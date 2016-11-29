@@ -121,7 +121,6 @@ func TestUpdateVideo(t *testing.T) {
 		Title: "This is the Title of the Post",
 		YouTubeData: YouTubeData{
 			Id:    "EHoyDH1cYwM",
-			Title: "The original Youtube title",
 			Body:  "Thsi si the body om the post/youtube item",
 		},
 		Body: "this is the body of the POST item",
@@ -147,7 +146,6 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 		Title: "This is the Title of the Post",
 		YouTubeData: YouTubeData{
 			Id:    "EHoyDH1cYwM",
-			Title: "The original Youtube title",
 		},
 		Transcript: "Now is the time for all good men to come to the aid",
 	}

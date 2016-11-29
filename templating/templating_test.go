@@ -9,6 +9,7 @@ import (
 func TestTemplateNotFound(t *testing.T) {
 	data := templating.YouTubeData{
 		Id:         "sdsdsdsd",
+		Title: "The TitleTitle",
 		Body:       "the Body",
 		Transcript: "the transcript",
 		TopResult:  "http://www.top.com",
@@ -22,8 +23,8 @@ func TestTemplateNotFound(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	id := "ididididid"
-	title := "The title"
-	body := "\n\nthe Body"
+	title := "The TitleXXX"
+	body := "\n\nThe Body"
 	transcript := "The transcript"
 	topResult := "http://number-one-on-google.com"
 	music := []string{}
@@ -31,7 +32,7 @@ func TestParse(t *testing.T) {
 
 	data := templating.YouTubeData{
 		Id:         id,
-		Title:  title,
+		Title:      title,
 		Body:       body,
 		Transcript: transcript,
 		TopResult:  topResult,
@@ -43,6 +44,8 @@ func TestParse(t *testing.T) {
 	testCases := []struct {
 		expected string
 	}{
+		{"The TitleXXX // "},
+		{" // The Body"},
 		{"http://www.developmentthatpays.com/-/subscribe"},
 		{"https://www.youtube.com/watch?v=" + id},
 		{topResult},
@@ -80,9 +83,9 @@ func TestMusic(t *testing.T) {
 	}
 
 	musicString := `MUSIC
--- music1
--- music2
--- music3
+- music1
+- music2
+- music3
 
 `
 

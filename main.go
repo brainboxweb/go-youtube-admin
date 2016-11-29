@@ -171,7 +171,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
 	updated = false
 
-	newTitle := fmt.Sprintf("%s - DTP #%d", post.Title, index)
+	newTitle := fmt.Sprintf("%s  [#%d]", post.Title, index)
 	if video.Snippet.Title != newTitle {
 		video.Snippet.Title = newTitle
 		updated = true
@@ -179,6 +179,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
 	data := templating.YouTubeData{
 		Id:         post.YouTubeData.Id,
+		Title:      post.Title,
 		Body:       post.YouTubeData.Body,
 		Transcript: post.Transcript,
 		TopResult:  post.TopResult,
@@ -236,7 +237,6 @@ func getYouTubeData() []YouTubeData {
 			for _, playlistItem := range playlistResponse.Items {
 
 				yt := YouTubeData{
-					Title: playlistItem.Snippet.Title,
 					Id:    playlistItem.Snippet.ResourceId.VideoId,
 					Body:  playlistItem.Snippet.Description,
 				}
@@ -303,7 +303,6 @@ func readYAMLFile(filename string) []byte {
 
 type YouTubeData struct {
 	Id    string
-	Title string
 	Body  string
 	Music []string
 }

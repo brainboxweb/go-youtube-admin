@@ -1,20 +1,14 @@
-{{.Title}} // {{.Body}}
+{{ .Title }} // {{ .Body }}
 
+
+{{if .Music}}MUSIC{{ range .Music }}
+- {{ . }}{{ end }}
+
+{{ end }}
 SUBSCRIBE
 - http://www.developmentthatpays.com/-/subscribe
 
-{{if .Music}}
-MUSIC{{ range .Music }}
--- {{ . }}{{ end }}
+DEVELOPMENT THAT PAYS is a business-focused look at WHAT'S WORKING NOW in Software Development. Subscribe for a NEW VIDEO EVERY WEDNESDAY!
 
-{{ end }}
-
-
-+++++++++++++++++++++++++++++++
-
-DEVELOPMENT THAT PAYS is a weekly video that takes a business-focused look at what's working now in Software Development. If your business depends on Software Development, I'd love to have you subscribe for a new video every Wednesday!
-
-+++++++++++++++++++++++++++++++
-
-
-{{.Transcript}}
+_______________________________________
+TRANSCRIPT: {{.Transcript}}
