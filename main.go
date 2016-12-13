@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"fmt"
 	"github.com/brainboxweb/go-youtube-admin/templating"
+	"github.com/brainboxweb/go-youtube-admin/bitly"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -14,10 +15,12 @@ import (
 	"strings"
 	"sync"
 	"time"
-	//"github.com/hashicorp/hcl/hcl/token"
+	"net/url"
 )
 
 const postsFile = "data/posts.yml"
+const tweetsFile = "data/tweets.yml"
+const templateFile = "templating/youtube.txt"
 
 func main() {
 
@@ -33,6 +36,10 @@ func main() {
 
 			if c.Args().Get(0) == "update" {
 				update()
+			}
+
+			if c.Args().Get(0) == "bitly" {
+				updateBitly()
 			}
 		}
 
@@ -86,6 +93,8 @@ func update() {
 	posts := getPosts(
 		postsFile)
 
+	tweets := getTweets(tweetsFile)
+
 	c := make(chan interface{})
 
 	for slug, post := range posts {
@@ -96,13 +105,54 @@ func update() {
 			log.Fatalf("error: %v", err)
 		}
 
-		go updateVideo(c, yt, k, post)
+		go updateVideo(c, yt, k, post, tweets[slug])
 	}
 
 	for i := 0; i < len(posts); i++ {
 		result := <-c
 		fmt.Println(result)
 	}
+
+}
+
+
+func updateBitly() {
+
+	posts := getPosts(
+		postsFile)
+
+	tweets := getTweets(tweetsFile)
+
+	for slug, post := range posts {
+		if _, ok := tweets[slug]; ok {
+			continue
+		}
+		status := fmt.Sprintf("%s --> https://youtu.be/%s via @DevThatPays", post.Title, post.YouTubeData.Id)
+		var Url *url.URL
+		Url, err := url.Parse("http://twitter.com/home/")
+		if err != nil {
+			panic("boom")
+		}
+		parameters := url.Values{}
+		parameters.Add("status", status)
+		Url.RawQuery = parameters.Encode()
+
+		link := bitly.GetShortnedLink(Url.String())
+
+		tweets[slug] = Tweet{link}
+
+	}
+
+	data, err := yaml.Marshal(tweets)
+	if err != nil{
+		panic("did not see that coming")
+	}
+
+	err = ioutil.WriteFile(tweetsFile, data, 0644)
+	if err != nil {
+		panic("more surprises")
+	}
+
 
 }
 
@@ -130,12 +180,12 @@ func fetchRemotePostsData() {
 	}
 }
 
-func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
+func updateVideo(c chan interface{}, yt YouTuber, index int, post Post, tweet Tweet) {
 
 	videoId := post.YouTubeData.Id
 	video := getVideo(videoId)
 
-	updated := updateSnippet(video, index, post)
+	updated := updateSnippet(video, index, post, tweet)
 	if !updated {
 		c <- fmt.Sprintf("NO CHANGE - %d %s", index, post.Title)
 		return
@@ -167,15 +217,16 @@ func getVideo(videoID string) *youtube.Video {
 	return response.Items[0]
 }
 
-func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
+func updateSnippet(video *youtube.Video, index int, post Post, tweet Tweet) (updated bool) {
 
 	updated = false
 
-	newTitle := fmt.Sprintf("%s  [#%d]", post.Title, index)
+	newTitle := fmt.Sprintf("%s  - DTP#%d", post.Title, index)
 	if video.Snippet.Title != newTitle {
 		video.Snippet.Title = newTitle
 		updated = true
 	}
+
 
 	data := templating.YouTubeData{
 		Id:         post.YouTubeData.Id,
@@ -184,12 +235,13 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		Transcript: post.Transcript,
 		TopResult:  post.TopResult,
 		Music:      post.YouTubeData.Music,
+		ClickToTweet:      tweet.Link,
 	}
 
-	newDescription, err := templating.GetYouTubeBody(data, "templating/youtube.txt")
-	if err != nil {
-		panic("Error experienced when creating newDescription")
-	}
+	newDescription := templating.GetYouTubeBody(data, templateFile)
+	//if err != nil {
+	//	panic("Error experienced when creating newDescription")
+	//}
 
 	if video.Snippet.Description != newDescription {
 		video.Snippet.Description = newDescription
@@ -197,6 +249,8 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 	}
 	return updated
 }
+
+
 
 func getYouTubeData() []YouTubeData {
 
@@ -290,6 +344,14 @@ func getPosts(postsFle string) map[string]Post {
 	return posts
 }
 
+func getTweets(tweetsFile string) map[string]Tweet {
+
+	data := readYAMLFile(tweetsFile)
+	tweets := convertTweetsYAML(data)
+
+	return tweets
+}
+
 func readYAMLFile(filename string) []byte {
 
 	data, err := ioutil.ReadFile(filename)
@@ -326,4 +388,18 @@ func convertYAML(input []byte) map[string]Post {
 		log.Fatalf("error: %v", err)
 	}
 	return posts
+}
+
+type Tweet struct {
+	Link       string
+}
+
+func convertTweetsYAML(input []byte) map[string]Tweet {
+	tweets := make(map[string]Tweet)
+
+	err := yaml.Unmarshal(input, &tweets)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	return tweets
 }

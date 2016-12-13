@@ -1,14 +1,19 @@
-{{ .Title }} // {{ .Body }}
+{{ .Title }} // {{ .BodyFirst }}
+
+➽ SUBSCRIBE for a NEW VIDEO every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe
+
+{{ .BodyAllButFirst }}
+{{if .ClickToTweet}}
+Click to tweet this video: {{ .ClickToTweet }}{{ end }}
 
 
-{{if .Music}}MUSIC{{ range .Music }}
-- {{ . }}{{ end }}
+Let's be sociable!
+➽  Facebook: https://www.facebook.com/DevelopmentThatPays
+➽  Twitter: https://twitter.com/DevThatPays
+➽  LinkedIn: https://uk.linkedin.com/in/garystraughan
 
-{{ end }}
-SUBSCRIBE
-- http://www.developmentthatpays.com/-/subscribe
 
-DEVELOPMENT THAT PAYS is a business-focused look at WHAT'S WORKING NOW in Software Development. Subscribe for a NEW VIDEO EVERY WEDNESDAY!
-
-_______________________________________
-TRANSCRIPT: {{.Transcript}}
+More episodes: https://www.youtube.com/DevelopmentThatPays{{if .TopResult}}
+More info: {{ .TopResult }}{{ end }}{{if .Music}}
+Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}
+https://www.youtube.com/watch?v={{ .Id }}

@@ -9,33 +9,64 @@ import (
 )
 
 const MaxCharCount int = 5000
-const ChannelLink = "https://www.youtube.com/c/Developmentthatpays"
 
 type YouTubeData struct {
 	Id         string
 	Title      string
-	Body       string
+	Body      string
+	BodyFirst string
+	BodyAllButFirst string
 	Transcript string
 	Music      []string
 	TopResult  string
+	ClickToTweet string
 }
 
-func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
-	data.Transcript = cleanTranscript(data.Transcript)
-	data.Body = strings.Trim(data.Body, "\n ")
+func GetYouTubeBody(data YouTubeData, templateFile string) string {
+	//Split the body
+	first, rest := splitBody(data.Body)
+	data.BodyFirst = strings.Trim(first, "\n ")
+	data.BodyAllButFirst = strings.Trim(rest, "\n ")
+
+	body, err := applyTemplate(data, templateFile)
+	if err != nil{
+		panic(err)
+	}
+
+	//body = addTranscript(body, data.Transcript)
+
+	return  body
+}
+
+
+func addTranscript(body, transcript string) string {
+
+	transcript = cleanTranscript(transcript)
+	transcriptLength := MaxCharCount - len(body)
+	transcript = truncate(transcript, transcriptLength)
+	body = strings.Replace(body, "[[TRANSCRIPT]]", transcript, -1)
+	return body
+}
+
+func splitBody(body string) (first, rest string){
+	body = strings.Trim(body, "\n ")
+	re := regexp.MustCompile(`(?s)^(.*?)\n(.*)`)
+	result := re.FindStringSubmatch(body)
+	if result == nil {
+		return body, ""
+	}
+	first = strings.Trim(result[1], "\n ")
+	rest = strings.Trim(result[2], "\n ")
+	return first, rest
+}
+
+func applyTemplate(data YouTubeData, templateFile string) (string, error) {
+
 	body, err := parseTemplate(data, templateFile)
 	if err != nil {
 		return "", err
 	}
-	body = addBottomLinks(data, body)
 	return body, nil
-}
-
-func addBottomLinks(data YouTubeData, body string) string {
-	bottomLinks := fmt.Sprintf(" %s https://www.youtube.com/watch?v=%s %s", ChannelLink, data.Id, data.TopResult)
-	truncateLength := MaxCharCount - len(bottomLinks)
-	body = truncate(body, truncateLength) + bottomLinks
-	return body
 }
 
 func cleanTranscript(s string) string {

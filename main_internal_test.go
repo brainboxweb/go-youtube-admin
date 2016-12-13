@@ -130,7 +130,7 @@ func TestUpdateVideo(t *testing.T) {
 
 	yt := FakeYouTube{}
 
-	go updateVideo(c, yt, 1, post)
+	go updateVideo(c, yt, 1, post, Tweet{})
 
 	result := <-c
 	//Assert the error
@@ -156,7 +156,7 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 
 	c := make(chan interface{})
 
-	go updateVideo(c, yt, 1, post)
+	go updateVideo(c, yt, 1, post, Tweet{})
 
 	result := <-c
 
