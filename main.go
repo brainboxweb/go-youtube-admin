@@ -3,23 +3,25 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"fmt"
-	"github.com/brainboxweb/go-youtube-admin/templating"
 	"github.com/brainboxweb/go-youtube-admin/bitly"
+	"github.com/brainboxweb/go-youtube-admin/templating"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"net/url"
 )
 
 const postsFile = "data/posts.yml"
 const tweetsFile = "data/tweets.yml"
+const tagsFile = "data/tags.yml"
+
 const templateFile = "templating/youtube.txt"
 
 func main() {
@@ -40,6 +42,10 @@ func main() {
 
 			if c.Args().Get(0) == "bitly" {
 				updateBitly()
+			}
+
+			if c.Args().Get(0) == "getTags" {
+				getTags()
 			}
 		}
 
@@ -115,7 +121,7 @@ func update() {
 
 }
 
-
+// This should move to ADMIN!
 func updateBitly() {
 
 	posts := getPosts(
@@ -144,7 +150,7 @@ func updateBitly() {
 	}
 
 	data, err := yaml.Marshal(tweets)
-	if err != nil{
+	if err != nil {
 		panic("did not see that coming")
 	}
 
@@ -153,6 +159,47 @@ func updateBitly() {
 		panic("more surprises")
 	}
 
+}
+
+type Tags struct {
+	Tags []string
+}
+
+func getTags() {
+
+	posts := getPosts(
+		postsFile)
+
+	tagsMap := make(map[string]Tags)
+
+	for slug, post := range posts {
+
+		video := getVideo(post.YouTubeData.Id)
+
+		tagsData := video.Snippet.Tags
+
+		tags := Tags{}
+		for _, tagData := range tagsData {
+			//tag :=  Tag{tagData}
+
+			tags.Tags = append(tags.Tags, tagData)
+		}
+
+		tagsMap[slug] = tags
+
+		fmt.Println("\n", slug)
+
+	}
+	
+	data, err := yaml.Marshal(tagsMap)
+	if err != nil {
+		panic("did not see that coming")
+	}
+
+	err = ioutil.WriteFile(tagsFile, data, 0644)
+	if err != nil {
+		panic("more surprises")
+	}
 
 }
 
@@ -187,6 +234,8 @@ func updateVideo(c chan interface{}, yt YouTuber, index int, post Post, tweet Tw
 
 	updated := updateSnippet(video, index, post, tweet)
 	if !updated {
+
+		//video.Snippet.Tags
 		c <- fmt.Sprintf("NO CHANGE - %d %s", index, post.Title)
 		return
 	}
@@ -227,15 +276,14 @@ func updateSnippet(video *youtube.Video, index int, post Post, tweet Tweet) (upd
 		updated = true
 	}
 
-
 	data := templating.YouTubeData{
-		Id:         post.YouTubeData.Id,
-		Title:      post.Title,
-		Body:       post.YouTubeData.Body,
-		Transcript: post.Transcript,
-		TopResult:  post.TopResult,
-		Music:      post.YouTubeData.Music,
-		ClickToTweet:      tweet.Link,
+		Id:           post.YouTubeData.Id,
+		Title:        post.Title,
+		Body:         post.YouTubeData.Body,
+		Transcript:   post.Transcript,
+		TopResult:    post.TopResult,
+		Music:        post.YouTubeData.Music,
+		ClickToTweet: tweet.Link,
 	}
 
 	newDescription := templating.GetYouTubeBody(data, templateFile)
@@ -249,8 +297,6 @@ func updateSnippet(video *youtube.Video, index int, post Post, tweet Tweet) (upd
 	}
 	return updated
 }
-
-
 
 func getYouTubeData() []YouTubeData {
 
@@ -291,8 +337,8 @@ func getYouTubeData() []YouTubeData {
 			for _, playlistItem := range playlistResponse.Items {
 
 				yt := YouTubeData{
-					Id:    playlistItem.Snippet.ResourceId.VideoId,
-					Body:  playlistItem.Snippet.Description,
+					Id:   playlistItem.Snippet.ResourceId.VideoId,
+					Body: playlistItem.Snippet.Description,
 				}
 
 				data = append(data, yt)
@@ -391,7 +437,7 @@ func convertYAML(input []byte) map[string]Post {
 }
 
 type Tweet struct {
-	Link       string
+	Link string
 }
 
 func convertTweetsYAML(input []byte) map[string]Tweet {
