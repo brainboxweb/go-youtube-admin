@@ -3,23 +3,26 @@ package main
 import (
 	"code.google.com/p/google-api-go-client/youtube/v3"
 	"fmt"
-	"github.com/brainboxweb/go-youtube-admin/bitly"
+	//"github.com/brainboxweb/go-youtube-admin/bitly"
 	"github.com/brainboxweb/go-youtube-admin/templating"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
+	//"net/http"
+	//"net/url"
 	"os"
-	"strconv"
-	"strings"
+	//"strconv"
+	//"strings"
 	"sync"
 	"time"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-const postsFile = "data/posts.yml"
-const tweetsFile = "data/tweets.yml"
+const database = "../go-posts-admin/db/dtp.db"
+//const postsFile = "../go-posts-utils/data/posts.yml"
+//const tweetsFile = "data/tweets.yml"
 const tagsFile = "data/tags.yml"
 
 const templateFile = "templating/youtube.txt"
@@ -40,13 +43,13 @@ func main() {
 				update()
 			}
 
-			if c.Args().Get(0) == "bitly" {
-				updateBitly()
-			}
+			//if c.Args().Get(0) == "bitly" {
+			//	updateBitly()
+			//}
 
-			if c.Args().Get(0) == "getTags" {
-				getTags()
-			}
+			//if c.Args().Get(0) == "getTags" {
+			//	getTags()
+			//}
 		}
 
 		return nil
@@ -93,25 +96,27 @@ func backup() {
 
 func update() {
 
-	fetchRemotePostsData()
+	//fetchRemotePostsData()
 
 	yt := MyYouTube{}
-	posts := getPosts(
-		postsFile)
 
-	tweets := getTweets(tweetsFile)
+	posts := getPosts()
+
+	//tweets := getTweets(tweetsFile)
 
 	c := make(chan interface{})
 
-	for slug, post := range posts {
+	for id, post := range posts {
 
-		parts := strings.Split(slug, "-")
-		k, err := strconv.Atoi(parts[0])
-		if err != nil {
-			log.Fatalf("error: %v", err)
-		}
+		//parts := strings.Split(slug, "-")
+		//k, err := strconv.Atoi(parts[0])
+		//if err != nil {
+		//	log.Fatalf("error: %v", err)
+		//}
 
-		go updateVideo(c, yt, k, post, tweets[slug])
+		//slug := fmt.Sprintf("%d-%s", id, post.Slug)
+
+		go updateVideo(c, yt, id, post)
 	}
 
 	for i := 0; i < len(posts); i++ {
@@ -120,119 +125,118 @@ func update() {
 	}
 
 }
-
-// This should move to ADMIN!
-func updateBitly() {
-
-	posts := getPosts(
-		postsFile)
-
-	tweets := getTweets(tweetsFile)
-
-	for slug, post := range posts {
-		if _, ok := tweets[slug]; ok {
-			continue
-		}
-		status := fmt.Sprintf("%s --> https://youtu.be/%s via @DevThatPays", post.Title, post.YouTubeData.Id)
-		var Url *url.URL
-		Url, err := url.Parse("http://twitter.com/home/")
-		if err != nil {
-			panic("boom")
-		}
-		parameters := url.Values{}
-		parameters.Add("status", status)
-		Url.RawQuery = parameters.Encode()
-
-		link := bitly.GetShortnedLink(Url.String())
-
-		tweets[slug] = Tweet{link}
-
-	}
-
-	data, err := yaml.Marshal(tweets)
-	if err != nil {
-		panic("did not see that coming")
-	}
-
-	err = ioutil.WriteFile(tweetsFile, data, 0644)
-	if err != nil {
-		panic("more surprises")
-	}
-
-}
+//
+//// This should move to ADMIN!
+//func updateBitly() {
+//
+//	posts := getPosts(
+//		postsFile)
+//
+//	tweets := getTweets(tweetsFile)
+//
+//	for slug, post := range posts {
+//		if _, ok := tweets[slug]; ok {
+//			continue
+//		}
+//		status := fmt.Sprintf("%s --> https://youtu.be/%s via @DevThatPays", post.Title, post.YouTubeData.Id)
+//		var Url *url.URL
+//		Url, err := url.Parse("http://twitter.com/home/")
+//		if err != nil {
+//			panic("boom")
+//		}
+//		parameters := url.Values{}
+//		parameters.Add("status", status)
+//		Url.RawQuery = parameters.Encode()
+//
+//		link := bitly.GetShortnedLink(Url.String())
+//
+//		tweets[slug] = Tweet{link}
+//
+//	}
+//
+//	data, err := yaml.Marshal(tweets)
+//	if err != nil {
+//		panic("did not see that coming")
+//	}
+//
+//	err = ioutil.WriteFile(tweetsFile, data, 0644)
+//	if err != nil {
+//		panic("more surprises")
+//	}
+//
+//}
 
 type Tags struct {
 	Tags []string
 }
 
-func getTags() {
+//func getTags() {
+//
+//	posts := getPosts()
+//
+//	tagsMap := make(map[int]Tags)
+//
+//	for slug, post := range posts {
+//
+//		video := getVideo(post.YouTubeData.Id)
+//
+//		tagsData := video.Snippet.Tags
+//
+//		tags := Tags{}
+//		for _, tagData := range tagsData {
+//			//tag :=  Tag{tagData}
+//
+//			tags.Tags = append(tags.Tags, tagData)
+//		}
+//
+//		tagsMap[slug] = tags
+//
+//		fmt.Println("\n", slug)
+//
+//	}
+//
+//	data, err := yaml.Marshal(tagsMap)
+//	if err != nil {
+//		panic("did not see that coming")
+//	}
+//
+//	err = ioutil.WriteFile(tagsFile, data, 0644)
+//	if err != nil {
+//		panic("more surprises")
+//	}
+//
+//}
+//
+//func fetchRemotePostsData() {
+//
+//	client := &http.Client{}
+//
+//	resp, err := client.Get("http://www.developmentthatpays.com/" + postsFile)
+//
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//
+//	defer resp.Body.Close()
+//
+//	data, err := ioutil.ReadAll(resp.Body)
+//
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//
+//	err = ioutil.WriteFile(postsFile, data, 0644)
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//}
 
-	posts := getPosts(
-		postsFile)
-
-	tagsMap := make(map[string]Tags)
-
-	for slug, post := range posts {
-
-		video := getVideo(post.YouTubeData.Id)
-
-		tagsData := video.Snippet.Tags
-
-		tags := Tags{}
-		for _, tagData := range tagsData {
-			//tag :=  Tag{tagData}
-
-			tags.Tags = append(tags.Tags, tagData)
-		}
-
-		tagsMap[slug] = tags
-
-		fmt.Println("\n", slug)
-
-	}
-	
-	data, err := yaml.Marshal(tagsMap)
-	if err != nil {
-		panic("did not see that coming")
-	}
-
-	err = ioutil.WriteFile(tagsFile, data, 0644)
-	if err != nil {
-		panic("more surprises")
-	}
-
-}
-
-func fetchRemotePostsData() {
-
-	client := &http.Client{}
-
-	resp, err := client.Get("http://www.developmentthatpays.com/" + postsFile)
-
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	defer resp.Body.Close()
-
-	data, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	err = ioutil.WriteFile(postsFile, data, 0644)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-}
-
-func updateVideo(c chan interface{}, yt YouTuber, index int, post Post, tweet Tweet) {
+func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
 
 	videoId := post.YouTubeData.Id
 	video := getVideo(videoId)
 
-	updated := updateSnippet(video, index, post, tweet)
+	updated := updateSnippet(video, index, post)
 	if !updated {
 
 		//video.Snippet.Tags
@@ -240,13 +244,13 @@ func updateVideo(c chan interface{}, yt YouTuber, index int, post Post, tweet Tw
 		return
 	}
 
-	err := yt.persistVideo(video)
-	if err != nil {
-		//c <- fmt.Sprintf("ERROR - %d %s - %s", index, post.Title, err)
-		c <- err //Not great - don't know the source of the error
-	}
+	//err := yt.persistVideo(video)
+	//if err != nil {
+	//	//c <- fmt.Sprintf("ERROR - %d %s - %s", index, post.Title, err)
+	//	c <- err //Not great - don't know the source of the error
+	//}
 
-	c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
+	c <- fmt.Sprintf("UPDATED - %d %s %v", index, post.Title)
 }
 
 func getVideo(videoID string) *youtube.Video {
@@ -266,7 +270,7 @@ func getVideo(videoID string) *youtube.Video {
 	return response.Items[0]
 }
 
-func updateSnippet(video *youtube.Video, index int, post Post, tweet Tweet) (updated bool) {
+func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
 	updated = false
 
@@ -283,7 +287,7 @@ func updateSnippet(video *youtube.Video, index int, post Post, tweet Tweet) (upd
 		Transcript:   post.Transcript,
 		TopResult:    post.TopResult,
 		Music:        post.YouTubeData.Music,
-		ClickToTweet: tweet.Link,
+		ClickToTweet: post.ClickToTweet,
 	}
 
 	newDescription := templating.GetYouTubeBody(data, templateFile)
@@ -382,32 +386,115 @@ func getService() (service *youtube.Service) {
 	return service
 }
 
-func getPosts(postsFle string) map[string]Post {
+func getPosts() map[int]Post {
 
-	data := readYAMLFile(postsFle)
-	posts := convertYAML(data)
+	db, err := sql.Open("sqlite3", database)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	posts := make(map[int]Post)
+
+	rows, err := db.Query("SELECT id, slug, title, description, published, body, transcript, topresult, click_to_tweet FROM posts")
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+
+
+		p := new(Post)
+
+		err = rows.Scan(&p.Id, &p.Slug, &p.Title, &p.Description, &p.Date, &p.Body, &p.Transcript, &p.TopResult, &p.ClickToTweet)
+		if err != nil {
+			panic(err)
+		}
+
+		//Tags/Keywords
+		//keywords := new(Keywords)
+
+		rows2, err := db.Query("SELECT keyword_id FROM posts_keywords_xref WHERE post_id = ?", p.Id)
+		if err != nil {
+			panic(err)
+		}
+
+		for rows2.Next() {
+
+			keyword := ""
+
+			err = rows2.Scan(&keyword)
+			if err != nil {
+				panic(err)
+			}
+
+			p.Keywords = append(p.Keywords, keyword)
+		}
+
+		//Youtube
+		yt := new(YouTubeData)
+
+		rows3, err := db.Query("SELECT id, body FROM youtube WHERE post_id = ?", p.Id)
+		if err != nil {
+			panic(err)
+		}
+
+		for rows3.Next() {
+			err = rows3.Scan(&yt.Id, &yt.Body)
+			if err != nil {
+				panic(err)
+			}
+
+			rows4, err := db.Query("SELECT music_id  FROM youtube_music_xref WHERE youtube_id = ?", yt.Id)
+			if err != nil {
+				panic(err)
+			}
+
+			for rows4.Next() {
+
+				var music string
+				err = rows4.Scan(&music)
+				if err != nil {
+					panic(err)
+				}
+
+				yt.Music = append(yt.Music, music)
+			}
+
+			//Assign to the post
+			p.YouTubeData = *yt
+		}
+
+		posts[p.Id] = *p
+
+	}
+
+	//toJson(posts)
+	//
+	//data := readYAMLFile(postsFle)
+	//posts := convertYAML(data)
 
 	return posts
 }
 
-func getTweets(tweetsFile string) map[string]Tweet {
+//func getTweets(tweetsFile string) map[string]Tweet {
+//
+//	data := readYAMLFile(tweetsFile)
+//	tweets := convertTweetsYAML(data)
+//
+//	return tweets
+//}
 
-	data := readYAMLFile(tweetsFile)
-	tweets := convertTweetsYAML(data)
-
-	return tweets
-}
-
-func readYAMLFile(filename string) []byte {
-
-	data, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		log.Fatalf("Failed to read YML file : %v", err.Error())
-	}
-
-	return data
-}
+//func readYAMLFile(filename string) []byte {
+//
+//	data, err := ioutil.ReadFile(filename)
+//
+//	if err != nil {
+//		log.Fatalf("Failed to read YML file : %v", err.Error())
+//	}
+//
+//	return data
+//}
 
 type YouTubeData struct {
 	Id    string
@@ -416,36 +503,40 @@ type YouTubeData struct {
 }
 
 type Post struct {
+	Id int
+	Slug string
 	Title       string
 	Description string
 	Date        string
 	TopResult   string
+	Keywords    []string
 	YouTubeData YouTubeData
-	Image       string
 	Body        string
 	Transcript  string
+	ClickToTweet string
 }
-
-func convertYAML(input []byte) map[string]Post {
-	posts := make(map[string]Post)
-
-	err := yaml.Unmarshal(input, &posts)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	return posts
-}
-
-type Tweet struct {
-	Link string
-}
-
-func convertTweetsYAML(input []byte) map[string]Tweet {
-	tweets := make(map[string]Tweet)
-
-	err := yaml.Unmarshal(input, &tweets)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	return tweets
-}
+//
+//
+//func convertYAML(input []byte) map[string]Post {
+//	posts := make(map[string]Post)
+//
+//	err := yaml.Unmarshal(input, &posts)
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//	return posts
+//}
+//
+//type Tweet struct {
+//	Link string
+//}
+//
+//func convertTweetsYAML(input []byte) map[string]Tweet {
+//	tweets := make(map[string]Tweet)
+//
+//	err := yaml.Unmarshal(input, &tweets)
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//	return tweets
+//}
