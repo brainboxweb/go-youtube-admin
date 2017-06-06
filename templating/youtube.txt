@@ -1,19 +1,16 @@
-{{ .Title }} // {{ .BodyFirst }}
+{{ .Index }}. {{ .Title }} // {{ .BodyFirst }}
 
 ➽ SUBSCRIBE for a NEW VIDEO every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe
-
 {{ .BodyAllButFirst }}
-{{if .ClickToTweet}}
-Click to tweet this video: {{ .ClickToTweet }}{{ end }}
 
 
 Let's be sociable!
 ➽  Facebook: https://www.facebook.com/DevelopmentThatPays
 ➽  Twitter: https://twitter.com/DevThatPays
-➽  LinkedIn: https://uk.linkedin.com/in/garystraughan
 
 
-More episodes: https://www.youtube.com/DevelopmentThatPays{{if .TopResult}}
-More info: {{ .TopResult }}{{ end }}{{if .Music}}
+{{if .Music}}
 Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}
-https://www.youtube.com/watch?v={{ .Id }}
+
+[[TRANSCRIPT]]
+https://www.youtube.com/DevelopmentThatPays https://www.youtube.com/watch?v={{ .Id }} {{ if .TopResult }}https://www.youtube.com/watch?v={{ .TopResult }}{{ end }}

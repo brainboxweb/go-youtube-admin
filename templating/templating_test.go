@@ -15,7 +15,7 @@ func TestMusic(t *testing.T) {
 	data := templating.YouTubeData{
 		Music:      music,
 	}
-	parsed := templating.GetYouTubeBody(data, "youtube.txt")
+	parsed, _ := templating.GetYouTubeBody(data, "youtube.txt")
 
 	expected := "Music: music1 music2 music3"
 

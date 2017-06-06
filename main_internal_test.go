@@ -6,8 +6,8 @@ import (
 	//"reflect"
 	"strings"
 	"testing"
-
 )
+
 //
 //func TestUnmarshalYAML(t *testing.T) {
 //
@@ -131,7 +131,7 @@ func TestUpdateVideo(t *testing.T) {
 
 	yt := FakeYouTube{}
 
-	go updateVideo(c, yt, 1, post, Tweet{})
+	go updateVideo(c, yt, 1, post)
 
 	result := <-c
 	//Assert the error
@@ -157,9 +157,11 @@ func TestUpdateVideoErrorCondition(t *testing.T) {
 
 	c := make(chan interface{})
 
-	go updateVideo(c, yt, 1, post, Tweet{})
+	go updateVideo(c, yt, 1, post)
 
-	result := <-c
+
+
+result := <-c
 
 	//Assert the error
 	_, found := result.(error)

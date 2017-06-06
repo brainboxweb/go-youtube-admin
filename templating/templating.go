@@ -12,9 +12,10 @@ const MaxCharCount int = 5000
 
 type YouTubeData struct {
 	Id         string
+	Index      int
 	Title      string
-	Body      string
-	BodyFirst string
+	Body       string
+	BodyFirst  string
 	BodyAllButFirst string
 	Transcript string
 	Music      []string
@@ -22,7 +23,7 @@ type YouTubeData struct {
 	ClickToTweet string
 }
 
-func GetYouTubeBody(data YouTubeData, templateFile string) string {
+func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	//Split the body
 	first, rest := splitBody(data.Body)
 	data.BodyFirst = strings.Trim(first, "\n ")
@@ -30,22 +31,20 @@ func GetYouTubeBody(data YouTubeData, templateFile string) string {
 
 	body, err := applyTemplate(data, templateFile)
 	if err != nil{
-		panic(err)
+		return "", err
 	}
 
-	//body = addTranscript(body, data.Transcript)
+	//Transcript
+	transcript := cleanTranscript(data.Transcript)
+	transcriptCount := MaxCharCount - len(body)
+	transcript = truncate(transcript, transcriptCount)
 
-	return  body
-}
 
 
-func addTranscript(body, transcript string) string {
 
-	transcript = cleanTranscript(transcript)
-	transcriptLength := MaxCharCount - len(body)
-	transcript = truncate(transcript, transcriptLength)
-	body = strings.Replace(body, "[[TRANSCRIPT]]", transcript, -1)
-	return body
+	body = strings.Replace(body, "[[TRANSCRIPT]]", transcript, 1)
+
+	return  body, nil
 }
 
 func splitBody(body string) (first, rest string){
@@ -61,7 +60,6 @@ func splitBody(body string) (first, rest string){
 }
 
 func applyTemplate(data YouTubeData, templateFile string) (string, error) {
-
 	body, err := parseTemplate(data, templateFile)
 	if err != nil {
 		return "", err
