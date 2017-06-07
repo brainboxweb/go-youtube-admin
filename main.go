@@ -130,6 +130,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 	//Description
 	data := templating.YouTubeData{
 		Id:           post.YouTubeData.Id,
+		Playlist:     post.YouTubeData.Playlist,
 		Index:        index,
 		Title:        post.Title,
 		Body:         post.YouTubeData.Body,
@@ -234,13 +235,13 @@ func getPosts() map[int]Post {
 	}
 	defer db.Close()
 	posts := make(map[int]Post)
-	rows, err := db.Query("SELECT posts.id, slug, title, description, topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id")
+	rows, err := db.Query("SELECT posts.id, slug, title, description, topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id")
 	if err != nil {
 		panic(err)
 	}
 	for rows.Next() {
 		p := new(Post)
-		err = rows.Scan(&p.Id, &p.Slug, &p.Title, &p.Description, &p.TopResult, &p.ClickToTweet, &p.Transcript, &p.YouTubeData.Id, &p.YouTubeData.Body)
+		err = rows.Scan(&p.Id, &p.Slug, &p.Title, &p.Description, &p.TopResult, &p.ClickToTweet, &p.Transcript, &p.YouTubeData.Id, &p.YouTubeData.Body, &p.YouTubeData.Playlist)
 		if err != nil {
 			panic(err)
 		}
@@ -277,6 +278,7 @@ func getPosts() map[int]Post {
 type YouTubeData struct {
 	Id    string
 	Body  string
+	Playlist string
 	Music []string
 }
 

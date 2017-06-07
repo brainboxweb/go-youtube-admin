@@ -1,16 +1,14 @@
 {{ .Index }}. {{ .Title }} // {{ .BodyFirst }}
 
-➽ SUBSCRIBE for a NEW VIDEO every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe
+→ SUBSCRIBE for a NEW EPISODE every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe
 {{ .BodyAllButFirst }}
 
-
-Let's be sociable!
-➽  Facebook: https://www.facebook.com/DevelopmentThatPays
-➽  Twitter: https://twitter.com/DevThatPays
 
 
 {{if .Music}}
 Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}
 
 [[TRANSCRIPT]]
-https://www.youtube.com/DevelopmentThatPays https://www.youtube.com/watch?v={{ .Id }} {{ if .TopResult }}https://www.youtube.com/watch?v={{ .TopResult }}{{ end }}
+https://www.youtube.com/DevelopmentThatPays
+https://www.youtube.com/watch?v={{ .Id }}{{ if .Playlist }}&list={{ .Playlist }}{{ end }}
+{{ if .TopResult }}https://www.youtube.com/watch?v={{ .TopResult }}{{ end }}

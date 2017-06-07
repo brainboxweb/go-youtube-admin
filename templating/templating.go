@@ -12,6 +12,7 @@ const MaxCharCount int = 5000
 
 type YouTubeData struct {
 	Id         string
+	Playlist   string
 	Index      int
 	Title      string
 	Body       string
