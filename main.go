@@ -141,7 +141,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 	}
 	newDescription, err := templating.GetYouTubeBody(data, templateFile)
 	if err != nil {
-		panic("Error experienced when creating newDescription")
+		panic(err)
 	}
 	if video.Snippet.Description != newDescription {
 		video.Snippet.Description = newDescription

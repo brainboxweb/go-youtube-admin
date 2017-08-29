@@ -8,7 +8,7 @@ import (
 	"text/template"
 )
 
-const MaxCharCount int = 5000
+const MaxCharCount int = 4800
 
 type YouTubeData struct {
 	Id         string
@@ -18,6 +18,7 @@ type YouTubeData struct {
 	Body       string
 	BodyFirst  string
 	BodyAllButFirst string
+	HasSubscribeLink bool
 	Transcript string
 	Music      []string
 	TopResult  string
@@ -30,6 +31,11 @@ func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	data.BodyFirst = strings.Trim(first, "\n ")
 	data.BodyAllButFirst = strings.Trim(rest, "\n ")
 
+	data.HasSubscribeLink = true
+	if strings.Contains(data.BodyFirst, "http"){
+		data.HasSubscribeLink = false
+	}
+
 	body, err := applyTemplate(data, templateFile)
 	if err != nil{
 		return "", err
@@ -39,9 +45,6 @@ func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	transcript := cleanTranscript(data.Transcript)
 	transcriptCount := MaxCharCount - len(body)
 	transcript = truncate(transcript, transcriptCount)
-
-
-
 
 	body = strings.Replace(body, "[[TRANSCRIPT]]", transcript, 1)
 
