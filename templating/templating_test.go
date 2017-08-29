@@ -4,16 +4,13 @@ import (
 	"github.com/brainboxweb/go-youtube-admin/templating"
 	"strings"
 	"testing"
-
 )
-
-
 
 func TestMusic(t *testing.T) {
 
 	music := []string{"music1", "music2", "music3"}
 	data := templating.YouTubeData{
-		Music:      music,
+		Music: music,
 	}
 	parsed, _ := templating.GetYouTubeBody(data, "youtube.txt")
 
@@ -23,6 +20,7 @@ func TestMusic(t *testing.T) {
 		t.Errorf("Expected music to be %s", music)
 	}
 }
+
 //
 //func TestTranscript(t *testing.T) {
 //

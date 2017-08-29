@@ -2,15 +2,14 @@ package templating
 
 import (
 	"fmt"
-	"testing"
 	"strings"
+	"testing"
 )
-
 
 func TestTemplateNotFound(t *testing.T) {
 	data := YouTubeData{
 		Id:         "sdsdsdsd",
-		Title: "The TitleTitle",
+		Title:      "The TitleTitle",
 		Body:       "the Body",
 		Transcript: "the transcript",
 		TopResult:  "http://www.top.com",
@@ -22,8 +21,6 @@ func TestTemplateNotFound(t *testing.T) {
 	}
 }
 
-
-
 func TestParse(t *testing.T) {
 	id := "ididididid"
 	title := "The Video Title"
@@ -31,24 +28,22 @@ func TestParse(t *testing.T) {
 	templateFile := "youtube.txt"
 
 	data := YouTubeData{
-		Id:         id,
-		Title:      title,
-		BodyFirst: "The Body",
+		Id:              id,
+		Title:           title,
+		BodyFirst:       "The Body",
 		BodyAllButFirst: "Second line of the body",
-		TopResult:  topResult,
-		Music:      []string{},
+		TopResult:       topResult,
+		Music:           []string{},
 	}
 
 	parsed, _ := parseTemplate(data, templateFile)
-
-	fmt.Println(parsed)
 
 	testCases := []struct {
 		expected string
 	}{
 		{"The Video Title // "},
 		{" // The Body"},
-		{"http://www.DevelopmentThatPays.com/-/subscribe"},
+		//{"http://www.DevelopmentThatPays.com/-/subscribe"},
 		{"https://www.youtube.com/watch?v=" + id},
 		{topResult},
 	}
@@ -64,7 +59,7 @@ func TestParse(t *testing.T) {
 
 func TestSplitBody(t *testing.T) {
 	testCases := []struct {
-		input    string
+		input     string
 		expected1 string
 		expected2 string
 	}{
@@ -89,7 +84,6 @@ For all good men`,
 		})
 	}
 }
-
 
 func TestTruncate(t *testing.T) {
 	expectedLength := 4

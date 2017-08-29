@@ -11,18 +11,18 @@ import (
 const MaxCharCount int = 4800
 
 type YouTubeData struct {
-	Id         string
-	Playlist   string
-	Index      int
-	Title      string
-	Body       string
-	BodyFirst  string
-	BodyAllButFirst string
+	Id               string
+	Playlist         string
+	Index            int
+	Title            string
+	Body             string
+	BodyFirst        string
+	BodyAllButFirst  string
 	HasSubscribeLink bool
-	Transcript string
-	Music      []string
-	TopResult  string
-	ClickToTweet string
+	Transcript       string
+	Music            []string
+	TopResult        string
+	ClickToTweet     string
 }
 
 func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
@@ -32,12 +32,12 @@ func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	data.BodyAllButFirst = strings.Trim(rest, "\n ")
 
 	data.HasSubscribeLink = true
-	if strings.Contains(data.BodyFirst, "http"){
+	if strings.Contains(data.BodyFirst, "http") {
 		data.HasSubscribeLink = false
 	}
 
 	body, err := applyTemplate(data, templateFile)
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 
@@ -48,10 +48,10 @@ func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 
 	body = strings.Replace(body, "[[TRANSCRIPT]]", transcript, 1)
 
-	return  body, nil
+	return body, nil
 }
 
-func splitBody(body string) (first, rest string){
+func splitBody(body string) (first, rest string) {
 	body = strings.Trim(body, "\n ")
 	re := regexp.MustCompile(`(?s)^(.*?)\n(.*)`)
 	result := re.FindStringSubmatch(body)

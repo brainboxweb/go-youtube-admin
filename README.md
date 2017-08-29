@@ -26,8 +26,44 @@ A ```client_secrets.json``` file with the following format. Note the value of th
 }
 ```
 
-A ```posts.yml``` file. See ```data/posts-test.yml``` for the required structure.
-
+A database with the following structure:
+        
+        DROP TABLE posts;
+        CREATE TABLE `posts` (
+            `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+            `slug` VARCHAR(255) NULL,
+            `title` VARCHAR(255) NULL,
+            `description` VARCHAR(400) NULL,
+            `published` DATETIME NULL,
+            `body` TEXT,
+            `transcript` TEXT NULL,
+            `topresult` TEXT NULL,
+            `click_to_tweet` VARCHAR(20)
+         );
+        
+        
+        DROP TABLE `posts_keywords_xref`;
+        CREATE TABLE `posts_keywords_xref` (
+          `post_id` INT,
+          `keyword_id` VARCHAR(100),
+          PRIMARY KEY (post_id, keyword_id)
+        );
+        
+        
+        
+        DROP TABLE `youtube`;
+        CREATE TABLE `youtube` (
+          `id` VARCHAR(255) PRIMARY KEY,
+          `post_id` INT NOT NULL,
+          `body` TEXT NULL
+        );
+        
+        
+        DROP TABLE `youtube_music_xref`;
+        CREATE TABLE `youtube_music_xref` (
+            `youtube_id` INT,
+            `music_id` VARCHAR(255)
+        );
 
 
 
@@ -41,16 +77,16 @@ will be requested to grant permission for the application to you YouTube channel
 
 Run the tests:
 
-```go test``
+        go test
 
 Install:
 
-```go install```
+        go install
 
-Back-up (title and body only) from YouTube to the ```backup``` directory.
+Back-up (title and body only) from YouTube to the ```backup``` directory:
 
-```go-youtube-admin backup```
+        go-youtube-admin backup
 
-Update YouTube with data from the ```data/posts.yml``` file
+Update YouTube:
 
-```go-youtube-admin update```
+        go-youtube-admin update

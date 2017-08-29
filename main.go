@@ -9,10 +9,10 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"log"
 	"os"
 	"sync"
 	"time"
-	"log"
 )
 
 const database = "../go-posts-admin/db/dtp.db"
@@ -118,7 +118,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		video.Snippet.Title = newTitle
 	}
 	//Tags
-	commonTags :=  []string{
+	commonTags := []string{
 		"Development That Pays",
 		"Gary Straughan",
 	}
@@ -152,10 +152,10 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
 func compareSlice(a, b []string) bool {
 	if a == nil && b == nil {
-		return true;
+		return true
 	}
 	if a == nil || b == nil {
-		return false;
+		return false
 	}
 	if len(a) != len(b) {
 		return false
@@ -276,10 +276,10 @@ func getPosts() map[int]Post {
 }
 
 type YouTubeData struct {
-	Id    string
-	Body  string
+	Id       string
+	Body     string
 	Playlist string
-	Music []string
+	Music    []string
 }
 
 type Post struct {
