@@ -1,12 +1,14 @@
-{{ .Index }}. {{ .Title }} // {{ .BodyFirst }}
-{{ if .HasSubscribeLink }}
-→ SUBSCRIBE for a NEW EPISODE every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe{{ end }}
+{{ .Description }}
 
-{{ .BodyAllButFirst }}
+{{ .Body }}
 
+{{ if .HasSubscribeLink }}→ SUBSCRIBE for a NEW EPISODE every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe{{ end }}
 
 {{if .Music}}
 Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}
+
+-------------------
+{{ .Index }}. {{ .Title }}
 
 [[TRANSCRIPT]]
 https://www.youtube.com/watch?v={{ .Id }}{{ if .Playlist }}&list={{ .Playlist }}{{ end }}

@@ -15,6 +15,7 @@ type YouTubeData struct {
 	Playlist         string
 	Index            int
 	Title            string
+	Description      string
 	Body             string
 	BodyFirst        string
 	BodyAllButFirst  string
@@ -27,9 +28,9 @@ type YouTubeData struct {
 
 func GetYouTubeBody(data YouTubeData, templateFile string) (string, error) {
 	//Split the body
-	first, rest := splitBody(data.Body)
-	data.BodyFirst = strings.Trim(first, "\n ")
-	data.BodyAllButFirst = strings.Trim(rest, "\n ")
+	//first, rest := splitBody(data.Body)
+	//data.BodyFirst = strings.Trim(first, "\n ")
+	//data.BodyAllButFirst = strings.Trim(rest, "\n ")
 
 	data.HasSubscribeLink = true
 	if strings.Contains(data.BodyFirst, "http") {

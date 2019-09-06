@@ -111,8 +111,9 @@ func readConfig(scope string) (*oauth.Config, error) {
 // startWebServer starts a web server that listens on http://localhost:8080.
 // The webserver waits for an oauth code in the three-legged auth flow.
 func startWebServer() (codeCh chan string, err error) {
-	listener, err := net.Listen("tcp", "localhost:8080") //Watch out for this!!!!
+	listener, err := net.Listen("tcp", "localhost:8082") //Watch out for this!!!!
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	codeCh = make(chan string)

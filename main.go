@@ -1,18 +1,20 @@
 package main
 
 import (
-	"code.google.com/p/google-api-go-client/youtube/v3"
 	"database/sql"
 	"fmt"
-	"github.com/brainboxweb/go-youtube-admin/templating"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/urfave/cli"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"sync"
 	"time"
+
+	"code.google.com/p/google-api-go-client/youtube/v3"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
+
+	"github.com/brainboxweb/go-youtube-admin/templating"
 )
 
 const database = "../go-posts-admin/db/dtp.db"
@@ -28,7 +30,8 @@ func main() {
 				backup()
 			}
 			if c.Args().Get(0) == "update" {
-				update()
+
+				update(c.Args().Get(1))
 			}
 		}
 		return nil
@@ -41,6 +44,7 @@ type YouTuber interface {
 	persistVideo(*youtube.Video) error
 }
 
+//MyYouTube is a struct representing the YT service
 type MyYouTube struct{} //@todo - rename this
 //Implement the YouTuber interface
 func (MyYouTube) persistVideo(video *youtube.Video) error {
@@ -65,10 +69,10 @@ func backup() {
 	}
 }
 
-func update() {
+func update(id string) {
 	yt := MyYouTube{}
-	posts := getPosts()
-	c := make(chan interface{})
+	posts := getPosts(id)
+	c := make(chan UpdateResult)
 	for id, post := range posts {
 		go updateVideo(c, yt, id, post)
 	}
@@ -78,19 +82,36 @@ func update() {
 	}
 }
 
-func updateVideo(c chan interface{}, yt YouTuber, index int, post Post) {
-	videoId := post.YouTubeData.Id
-	video := getVideo(videoId)
+//UpdateResult provides information on a video update
+type UpdateResult struct{
+	Status string
+	Error error
+}
+
+func updateVideo(c chan UpdateResult, yt YouTuber, index int, post Post) {
+	videoID := post.YouTubeData.Id
+	video := getVideo(videoID)
 	updated := updateSnippet(video, index, post)
+
 	if !updated {
-		c <- fmt.Sprintf("NO CHANGE - %d %s", index, post.Title)
+		c <- UpdateResult{
+			Status: fmt.Sprintf("NO CHANGE - %d %s", index, post.Title),
+			Error: nil,
+		}
 		return
 	}
 	err := yt.persistVideo(video)
 	if err != nil {
-		c <- fmt.Sprintf(">>>>ERROR - %d %s, %s", index, post.Title, err)
+		c <- UpdateResult{
+			Status: "",	
+			Error: fmt.Errorf(">>>>ERROR - %d %s, %s", index, post.Title, err),
+		}
 	}
-	c <- fmt.Sprintf("UPDATED - %d %s", index, post.Title)
+	c <- UpdateResult{
+		Status: fmt.Sprintf("UPDATED - %d %s", index, post.Title),
+		Error: nil,
+	} 
+	
 }
 
 func getVideo(videoID string) *youtube.Video {
@@ -112,27 +133,28 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 
 	//Title
 	newTitle := post.Title
-	//newTitle := post.Title
 	if video.Snippet.Title != newTitle {
 		updated = true
 		video.Snippet.Title = newTitle
 	}
+
 	//Tags
 	commonTags := []string{
 		"Development That Pays",
-		"Gary Straughan",
 	}
 	post.Keywords = append(post.Keywords, commonTags...)
 	if compareSlice(video.Snippet.Tags, post.Keywords) == false {
 		updated = true
 		video.Snippet.Tags = post.Keywords
 	}
+
 	//Description
 	data := templating.YouTubeData{
 		Id:           post.YouTubeData.Id,
 		Playlist:     post.YouTubeData.Playlist,
 		Index:        index,
 		Title:        post.Title,
+		Description:  post.Description,
 		Body:         post.YouTubeData.Body,
 		Transcript:   post.Transcript,
 		TopResult:    post.TopResult,
@@ -228,14 +250,19 @@ func getService() (service *youtube.Service) {
 	return service
 }
 
-func getPosts() map[int]Post {
+func getPosts(id string) map[int]Post {
 	db, err := sql.Open("sqlite3", database)
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 	posts := make(map[int]Post)
-	rows, err := db.Query("SELECT posts.id, slug, title, description, topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id")
+	q := "SELECT posts.id, slug, title, description, topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id"
+	if id != "" {
+		q = q + fmt.Sprintf(" WHERE posts.id = %s", id)
+	}
+
+	rows, err := db.Query(q)
 	if err != nil {
 		panic(err)
 	}
@@ -275,6 +302,7 @@ func getPosts() map[int]Post {
 	return posts
 }
 
+// YouTubeData is a a container for video data
 type YouTubeData struct {
 	Id       string
 	Body     string
@@ -282,6 +310,7 @@ type YouTubeData struct {
 	Music    []string
 }
 
+//Post is a container for submitted data relating to a video
 type Post struct {
 	Id           int
 	Slug         string
