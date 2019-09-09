@@ -1,13 +1,12 @@
 package main
 
 import (
-	"code.google.com/p/google-api-go-client/youtube/v3"
+	"errors"
 	"strings"
 	"testing"
-	"errors"
+
 	"github.com/davecgh/go-spew/spew"
-
-
+	"google.golang.org/api/youtube/v3"
 )
 
 func TestGetPosts(t *testing.T) {
@@ -51,7 +50,7 @@ func TestUpdateVideo(t *testing.T) {
 
 	spew.Dump(result.Error)
 
-	if result.Error != nil{
+	if result.Error != nil {
 		t.Error("Video not updated", result.Error)
 	}
 

@@ -2,51 +2,171 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
-	"flag"
+	// "errors"
+	// "flag"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"net"
 	"net/http"
 	"os"
+	"os/user"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"context"
+	"log"
 
-	"code.google.com/p/goauth2/oauth"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/youtube/v3"
 )
 
 const missingClientSecretsMessage = `
 Please configure OAuth 2.0
-To make this sample run, you need to populate the client_secrets.json file
-found at:
-   %v
-with information from the {{ Google Cloud Console }}
-{{ https://cloud.google.com/console }}
-For more information about the client_secrets.json file format, please visit:
-https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 `
 
-var (
-	clientSecretsFile = flag.String("secrets", "client_secrets.json", "Client Secrets configuration")
-	cacheFile         = flag.String("cache", "request.token", "Token cache file")
-)
+func buildOAuthHTTPClient(scope string) (*youtube.Service, error) {
+	ctx := context.Background()
 
-// ClientConfig is a data structure definition for the client_secrets.json file.
-// The code unmarshals the JSON configuration file into this structure.
-type ClientConfig struct {
-	ClientID     string   `json:"client_id"`
-	ClientSecret string   `json:"client_secret"`
-	RedirectURIs []string `json:"redirect_uris"`
-	AuthURI      string   `json:"auth_uri"`
-	TokenURI     string   `json:"token_uri"`
+	b, err := ioutil.ReadFile("client_secrets.json")
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	// If modifying these scopes, delete your previously saved credentials
+	// at ~/.credentials/youtube-go-quickstart.json
+	config, err := google.ConfigFromJSON(b, scope)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+	client := getClient(ctx, config)
+	return youtube.New(client)
+
 }
 
-// Config is a root-level configuration object.
-type Config struct {
-	Installed ClientConfig `json:"installed"`
-	Web       ClientConfig `json:"web"`
+// getClient uses a Context and Config to retrieve a Token
+// then generate a Client. It returns the generated Client.
+func getClient(ctx context.Context, config *oauth2.Config) *http.Client {
+	cacheFile, err := tokenCacheFile()
+	if err != nil {
+		log.Fatalf("Unable to get path to cached credential file. %v", err)
+	}
+	tok, err := tokenFromFile(cacheFile)
+	if err != nil {
+		tok = getTokenFromWeb(config)
+		saveToken(cacheFile, tok)
+	}
+	return config.Client(ctx, tok)
 }
+
+
+func handler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+  fmt.Println(r)
+  fmt.Println(w)
+}
+
+// getTokenFromWeb uses Config to request a Token.
+// It returns the retrieved Token.
+func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
+
+    // Start web server.
+		// This is how this program receives the authorization code
+		// when the browser redirects.
+		codeCh, err := startWebServer()
+		if err != nil {
+			return nil
+		}
+
+		// Open url in browser
+		url := config.AuthCodeURL("")
+		err = openURL(url)
+		if err != nil {
+			fmt.Println("Visit the URL below to get a code.",
+				" This program will pause until the site is visted.")
+		} else {
+			fmt.Println("Your browser has been opened to an authorization URL.", " This program will resume once authorization has been provided.")
+		}
+		fmt.Println(url)
+
+		// Wait for the web server to get the code.
+		code := <-codeCh
+
+	tok, err := config.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		log.Fatalf("Unable to retrieve token from web %v", err)
+	}
+	return tok
+}
+
+// tokenCacheFile generates credential file path/filename.
+// It returns the generated credential path/filename.
+func tokenCacheFile() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+	tokenCacheDir := filepath.Join(usr.HomeDir, ".credentials")
+	os.MkdirAll(tokenCacheDir, 0700)
+	return filepath.Join(tokenCacheDir,
+		url.QueryEscape("youtube-go-quickstart.json")), err
+}
+
+// tokenFromFile retrieves a Token from a given file path.
+// It returns the retrieved Token and any read error encountered.
+func tokenFromFile(file string) (*oauth2.Token, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+	t := &oauth2.Token{}
+	err = json.NewDecoder(f).Decode(t)
+	defer f.Close()
+	return t, err
+}
+
+// saveToken uses a file path to create a file and store the
+// token in it.
+func saveToken(file string, token *oauth2.Token) {
+	fmt.Printf("Saving credential file to: %s\n", file)
+	f, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		log.Fatalf("Unable to cache oauth token: %v", err)
+	}
+	defer f.Close()
+	json.NewEncoder(f).Encode(token)
+}
+
+func handleError(err error, message string) {
+	if message == "" {
+		message = "Error making API call"
+	}
+	if err != nil {
+		log.Fatalf(message+": %v", err.Error())
+	}
+}
+
+// startWebServer starts a web server that listens on http://localhost:8080.
+// The webserver waits for an oauth code in the three-legged auth flow.
+func startWebServer() (codeCh chan string, err error) {
+
+	listener, err := net.Listen("tcp", "localhost:8082") //Watch out for this!!!!
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	codeCh = make(chan string)
+	go http.Serve(listener, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		code := r.FormValue("code")
+		codeCh <- code // send code to OAuth flow
+		listener.Close()
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprintf(w, "Received code: %v\r\nYou can now safely close this browser window.", code)
+  }))
+	return codeCh, nil
+}
+
 
 // openURL opens a browser window to the specified location.
 // This code originally appeared at:
@@ -64,120 +184,4 @@ func openURL(url string) error {
 		err = fmt.Errorf("Cannot open URL %s on this platform", url)
 	}
 	return err
-}
-
-// readConfig reads the configuration from clientSecretsFile.
-// It returns an oauth configuration object for use with the Google API client.
-func readConfig(scope string) (*oauth.Config, error) {
-	// Read the secrets file
-	data, err := ioutil.ReadFile(*clientSecretsFile)
-	if err != nil {
-		pwd, _ := os.Getwd()
-		fullPath := filepath.Join(pwd, *clientSecretsFile)
-		return nil, fmt.Errorf(missingClientSecretsMessage, fullPath)
-	}
-
-	cfg := new(Config)
-	err = json.Unmarshal(data, &cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	var redirectUri string
-	if len(cfg.Web.RedirectURIs) > 0 {
-		redirectUri = cfg.Web.RedirectURIs[0]
-	} else if len(cfg.Installed.RedirectURIs) > 0 {
-		redirectUri = cfg.Installed.RedirectURIs[0]
-	} else {
-		return nil, errors.New("Must specify a redirect URI in config file or when creating OAuth client")
-	}
-
-	return &oauth.Config{
-		ClientId:     cfg.Installed.ClientID,
-		ClientSecret: cfg.Installed.ClientSecret,
-		Scope:        scope,
-		AuthURL:      cfg.Installed.AuthURI,
-		TokenURL:     cfg.Installed.TokenURI,
-		RedirectURL:  redirectUri,
-		TokenCache:   oauth.CacheFile(*cacheFile),
-		// Get a refresh token so we can use the access token indefinitely
-		AccessType: "offline",
-		// If we want a refresh token, we must set this attribute
-		// to force an approval prompt or the code won't work.
-		ApprovalPrompt: "force",
-	}, nil
-}
-
-// startWebServer starts a web server that listens on http://localhost:8080.
-// The webserver waits for an oauth code in the three-legged auth flow.
-func startWebServer() (codeCh chan string, err error) {
-	listener, err := net.Listen("tcp", "localhost:8082") //Watch out for this!!!!
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	codeCh = make(chan string)
-	go http.Serve(listener, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		code := r.FormValue("code")
-		codeCh <- code // send code to OAuth flow
-		listener.Close()
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintf(w, "Received code: %v\r\nYou can now safely close this browser window.", code)
-	}))
-
-	return codeCh, nil
-}
-
-// buildOAuthHTTPClient takes the user through the three-legged OAuth flow.
-// It opens a browser in the native OS or outputs a URL, then blocks until
-// the redirect completes to the /oauth2callback URI.
-// It returns an instance of an HTTP client that can be passed to the
-// constructor of the YouTube client.
-func buildOAuthHTTPClient(scope string) (*http.Client, error) {
-	config, err := readConfig(scope)
-	if err != nil {
-		msg := fmt.Sprintf("Cannot read configuration file: %v", err)
-		return nil, errors.New(msg)
-	}
-
-	transport := &oauth.Transport{Config: config}
-
-	// Try to read the token from the cache file.
-	// If an error occurs, do the three-legged OAuth flow because
-	// the token is invalid or doesn't exist.
-	token, err := config.TokenCache.Token()
-	if err != nil {
-		// Start web server.
-		// This is how this program receives the authorization code
-		// when the browser redirects.
-		codeCh, err := startWebServer()
-		if err != nil {
-			return nil, err
-		}
-
-		// Open url in browser
-		url := config.AuthCodeURL("")
-		err = openURL(url)
-		if err != nil {
-			fmt.Println("Visit the URL below to get a code.",
-				" This program will pause until the site is visted.")
-		} else {
-			fmt.Println("Your browser has been opened to an authorization URL.", " This program will resume once authorization has been provided.")
-		}
-		fmt.Println(url)
-
-		// Wait for the web server to get the code.
-		code := <-codeCh
-
-		// This code caches the authorization code on the local
-		// filesystem, if necessary, as long as the TokenCache
-		// attribute in the config is set.
-		token, err = transport.Exchange(code)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	transport.Token = token
-	return transport.Client(), nil
 }

@@ -6,12 +6,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
+	// "context"
 
-	"code.google.com/p/google-api-go-client/youtube/v3"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/urfave/cli"
+	"google.golang.org/api/youtube/v3"
 	"gopkg.in/yaml.v2"
 
 	"github.com/brainboxweb/go-youtube-admin/templating"
@@ -48,9 +50,12 @@ type YouTuber interface {
 type MyYouTube struct{} //@todo - rename this
 //Implement the YouTuber interface
 func (MyYouTube) persistVideo(video *youtube.Video) error {
-	service := getService()
+	service, err := getService()
+	if err != nil {
+		return err
+	}
 	call := service.Videos.Update("snippet", video)
-	_, err := call.Do()
+	_, err = call.Do()
 	return err
 }
 
@@ -83,9 +88,9 @@ func update(id string) {
 }
 
 //UpdateResult provides information on a video update
-type UpdateResult struct{
+type UpdateResult struct {
 	Status string
-	Error error
+	Error  error
 }
 
 func updateVideo(c chan UpdateResult, yt YouTuber, index int, post Post) {
@@ -96,26 +101,29 @@ func updateVideo(c chan UpdateResult, yt YouTuber, index int, post Post) {
 	if !updated {
 		c <- UpdateResult{
 			Status: fmt.Sprintf("NO CHANGE - %d %s", index, post.Title),
-			Error: nil,
+			Error:  nil,
 		}
 		return
 	}
 	err := yt.persistVideo(video)
 	if err != nil {
 		c <- UpdateResult{
-			Status: "",	
-			Error: fmt.Errorf(">>>>ERROR - %d %s, %s", index, post.Title, err),
+			Status: "",
+			Error:  fmt.Errorf(">>>>ERROR - %d %s, %s", index, post.Title, err),
 		}
 	}
 	c <- UpdateResult{
 		Status: fmt.Sprintf("UPDATED - %d %s", index, post.Title),
-		Error: nil,
-	} 
-	
+		Error:  nil,
+	}
+
 }
 
 func getVideo(videoID string) *youtube.Video {
-	service := getService()
+	service, err := getService()
+	if err != nil {
+		panic("unable to get YT Service")
+	}
 	call := service.Videos.List("snippet").Id(videoID)
 	response, err := call.Do()
 	if err != nil {
@@ -148,6 +156,10 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		video.Snippet.Tags = post.Keywords
 	}
 
+	//YouTube Hashtags
+	hashtags := strings.Split(post.YouTubeHashtags, ",")
+	hashtags = append(hashtags, "DevelopmentThatPays")
+
 	//Description
 	data := templating.YouTubeData{
 		Id:           post.YouTubeData.Id,
@@ -155,6 +167,7 @@ func updateSnippet(video *youtube.Video, index int, post Post) (updated bool) {
 		Index:        index,
 		Title:        post.Title,
 		Description:  post.Description,
+		Hashtags:     hashtags,
 		Body:         post.YouTubeData.Body,
 		Transcript:   post.Transcript,
 		TopResult:    post.TopResult,
@@ -191,7 +204,10 @@ func compareSlice(a, b []string) bool {
 }
 
 func getYouTubeData() []YouTubeData {
-	service := getService()
+	service, err := getService()
+	if err != nil {
+		log.Fatalf("Error getting YT Service: %v", err.Error())
+	}
 	call := service.Channels.List("contentDetails").Mine(true)
 	response, err := call.Do()
 	if err != nil {
@@ -234,20 +250,21 @@ func getYouTubeData() []YouTubeData {
 	return data
 }
 
-func getService() (service *youtube.Service) {
-	//@TODO - ADD SYNC.ONCE
+func getService() (service *youtube.Service, err error) {
 	var once sync.Once
 	once.Do(func() {
-		client, err := buildOAuthHTTPClient(youtube.YoutubeScope)
-		if err != nil {
-			log.Fatalf("Error building OAuth client: %v", err)
-		}
-		service, err = youtube.New(client)
-		if err != nil {
-			log.Fatalf("Error creating YouTube client: %v", err)
-		}
+
+		// client, err :=
+		// if err != nil {
+		// 	log.Fatalf("Error building OAuth client: %v", err)
+		// }
+
+		service, err = buildOAuthHTTPClient(youtube.YoutubeScope)
+		// if err != nil {
+		// 	log.Fatalf("Error creating YouTube client: %v", err)
+		// }
 	})
-	return service
+	return service, err
 }
 
 func getPosts(id string) map[int]Post {
@@ -257,7 +274,7 @@ func getPosts(id string) map[int]Post {
 	}
 	defer db.Close()
 	posts := make(map[int]Post)
-	q := "SELECT posts.id, slug, title, description, topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id"
+	q := "SELECT posts.id, slug, title, description, coalesce(yt_hashtags, ''), topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id"
 	if id != "" {
 		q = q + fmt.Sprintf(" WHERE posts.id = %s", id)
 	}
@@ -268,7 +285,7 @@ func getPosts(id string) map[int]Post {
 	}
 	for rows.Next() {
 		p := new(Post)
-		err = rows.Scan(&p.Id, &p.Slug, &p.Title, &p.Description, &p.TopResult, &p.ClickToTweet, &p.Transcript, &p.YouTubeData.Id, &p.YouTubeData.Body, &p.YouTubeData.Playlist)
+		err = rows.Scan(&p.Id, &p.Slug, &p.Title, &p.Description, &p.YouTubeHashtags, &p.TopResult, &p.ClickToTweet, &p.Transcript, &p.YouTubeData.Id, &p.YouTubeData.Body, &p.YouTubeData.Playlist)
 		if err != nil {
 			panic(err)
 		}
@@ -308,19 +325,40 @@ type YouTubeData struct {
 	Body     string
 	Playlist string
 	Music    []string
+	Hashtags []string
 }
 
 //Post is a container for submitted data relating to a video
 type Post struct {
-	Id           int
-	Slug         string
-	Title        string
-	Description  string
-	Date         string
-	TopResult    string
-	Keywords     []string
-	YouTubeData  YouTubeData
-	Body         string
-	Transcript   string
-	ClickToTweet string
+	Id              int
+	Slug            string
+	Title           string
+	Description     string
+	YouTubeHashtags string
+	Date            string
+	TopResult       string
+	Keywords        []string
+	YouTubeData     YouTubeData
+	Body            string
+	Transcript      string
+	ClickToTweet    string
 }
+
+/*
+We're looking at Scrum piece by piece. Today it's the turn of the SPRINT.
+
+
+Grab your FREE Scrum Cheat Sheet: https://www.developmentthatpays.com/cheatsheets/scrum
+
+
+→ SUBSCRIBE for a NEW EPISODE every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe
+
+
+
+-------------------
+138. The Scrum Sprint - [Scrum Basics 2019] + FREE Cheat Sheet
+
+Our journey has brought us to the Sprint. Arguably the defining feature of Scrum. One of the five Scum events - together with  Sprint Planning Daily Standup Sprint Review Sprint Retrospective It’s essentially a wrapper for the others. Did you know that all  All of the all Scrum events are time boxed There are, and no where is that more evident than in the Sprint. The Sprint Guide tells us that the maximum duration is 1 month. And while some teams go as short as 1 week, most find that 2 weeks is the sweet spot.   I started by saying that the SPRINT is the defining feature of Scrum but what is the intent The Scrum Guide lays it out. Each Sprint may be considered a project with no more than a one-month horizon. Like projects, Sprints are used to accomplish something. Each Sprint has a goal of what is to be built, a design and flexible plan that will guide building it, the work, and the resultant product increment. Scrum chunks it down in units of time but still requires that we run ALMOST the full gamut within each unit of time: DESIGN... BUILD… TEST…  Sprint after Sprint after sprint. What about release Scrum doesn’t require us to release; what it does require is that - each and every Sprint - we  build a “potentially releasable increment”. Whether or not the increment is ACTUALLY released is left to the team to decide.
+https://www.youtube.com/watch?v=7Zgap-V3U3g&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS
+
+*/

@@ -16,6 +16,7 @@ type YouTubeData struct {
 	Index            int
 	Title            string
 	Description      string
+	Hashtags         []string
 	Body             string
 	BodyFirst        string
 	BodyAllButFirst  string

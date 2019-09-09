@@ -8,7 +8,7 @@
 Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}
 
 -------------------
-{{ .Index }}. {{ .Title }}
+{{ .Index }}. {{ .Title }} {{range .Hashtags}} #{{ . }}{{end}}
 
 [[TRANSCRIPT]]
 https://www.youtube.com/watch?v={{ .Id }}{{ if .Playlist }}&list={{ .Playlist }}{{ end }}
