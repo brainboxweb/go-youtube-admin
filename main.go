@@ -124,6 +124,9 @@ func getVideo(videoID string) *youtube.Video {
 	if err != nil {
 		panic("unable to get YT Service")
 	}
+
+
+	
 	call := service.Videos.List("snippet").Id(videoID)
 	response, err := call.Do()
 	if err != nil {
@@ -259,10 +262,12 @@ func getService() (service *youtube.Service, err error) {
 		// 	log.Fatalf("Error building OAuth client: %v", err)
 		// }
 
+		fmt.Println("getting the service (once)")
 		service, err = buildOAuthHTTPClient(youtube.YoutubeScope)
-		// if err != nil {
-		// 	log.Fatalf("Error creating YouTube client: %v", err)
-		// }
+		if err != nil {
+			// fmt.Println("bad things happened")
+			log.Fatalf("Error creating YouTube client: %v", err)
+		}
 	})
 	return service, err
 }

@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	// "errors"
 	// "flag"
+	"context"
 	"fmt"
 	"io/ioutil"
-	"net/url"
+	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
-	"os/user"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"runtime"
-	"context"
-	"log"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -31,15 +31,21 @@ func buildOAuthHTTPClient(scope string) (*youtube.Service, error) {
 
 	b, err := ioutil.ReadFile("client_secrets.json")
 	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
+		// log.Fatalf("Unable to read client secret file: %v", err)
+		fmt.Printf("Unable to read client secret file: %v", err)
+		return nil, err
 	}
 
 	// If modifying these scopes, delete your previously saved credentials
 	// at ~/.credentials/youtube-go-quickstart.json
 	config, err := google.ConfigFromJSON(b, scope)
 	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
+		fmt.Printf("Unable to parse client secret file to config: %v", err)
+		return nil, err
 	}
+
+	// fmt.Println("the config is", config)
+
 	client := getClient(ctx, config)
 	return youtube.New(client)
 
@@ -57,41 +63,41 @@ func getClient(ctx context.Context, config *oauth2.Config) *http.Client {
 		tok = getTokenFromWeb(config)
 		saveToken(cacheFile, tok)
 	}
+
 	return config.Client(ctx, tok)
 }
 
-
 func handler(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-  fmt.Println(r)
-  fmt.Println(w)
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Println(r)
+	fmt.Println(w)
 }
 
 // getTokenFromWeb uses Config to request a Token.
 // It returns the retrieved Token.
 func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 
-    // Start web server.
-		// This is how this program receives the authorization code
-		// when the browser redirects.
-		codeCh, err := startWebServer()
-		if err != nil {
-			return nil
-		}
+	// Start web server.
+	// This is how this program receives the authorization code
+	// when the browser redirects.
+	codeCh, err := startWebServer()
+	if err != nil {
+		return nil
+	}
 
-		// Open url in browser
-		url := config.AuthCodeURL("")
-		err = openURL(url)
-		if err != nil {
-			fmt.Println("Visit the URL below to get a code.",
-				" This program will pause until the site is visted.")
-		} else {
-			fmt.Println("Your browser has been opened to an authorization URL.", " This program will resume once authorization has been provided.")
-		}
-		fmt.Println(url)
+	// Open url in browser
+	url := config.AuthCodeURL("")
+	err = openURL(url)
+	if err != nil {
+		fmt.Println("Visit the URL below to get a code.",
+			" This program will pause until the site is visted.")
+	} else {
+		fmt.Println("Your browser has been opened to an authorization URL.", " This program will resume once authorization has been provided.")
+	}
+	// fmt.Println(url)
 
-		// Wait for the web server to get the code.
-		code := <-codeCh
+	// Wait for the web server to get the code.
+	code := <-codeCh
 
 	tok, err := config.Exchange(oauth2.NoContext, code)
 	if err != nil {
@@ -107,6 +113,7 @@ func tokenCacheFile() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	tokenCacheDir := filepath.Join(usr.HomeDir, ".credentials")
 	os.MkdirAll(tokenCacheDir, 0700)
 	return filepath.Join(tokenCacheDir,
@@ -153,7 +160,6 @@ func startWebServer() (codeCh chan string, err error) {
 
 	listener, err := net.Listen("tcp", "localhost:8082") //Watch out for this!!!!
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	codeCh = make(chan string)
@@ -163,10 +169,9 @@ func startWebServer() (codeCh chan string, err error) {
 		listener.Close()
 		w.Header().Set("Content-Type", "text/plain")
 		fmt.Fprintf(w, "Received code: %v\r\nYou can now safely close this browser window.", code)
-  }))
+	}))
 	return codeCh, nil
 }
-
 
 // openURL opens a browser window to the specified location.
 // This code originally appeared at:

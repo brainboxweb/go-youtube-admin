@@ -89,4 +89,9 @@ Back-up (title and body only) from YouTube to the ```backup``` directory:
 
 Update YouTube:
 
-        go-youtube-admin update
+        go-youtube-admin update 139
+
+If things go wrong, delete this file:
+
+     ~/.credentials/youtube-quickstart.json
+
