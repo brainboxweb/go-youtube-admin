@@ -1,6 +1,8 @@
 client_*
 
 .idea
+.history
+
 backup/**
 backup/!.gitkeep
 
