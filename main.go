@@ -124,8 +124,6 @@ func getVideo(videoID string) *youtube.Video {
 	if err != nil {
 		panic("unable to get YT Service")
 	}
-
-
 	
 	call := service.Videos.List("snippet").Id(videoID)
 	response, err := call.Do()

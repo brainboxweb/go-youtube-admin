@@ -93,5 +93,5 @@ Update YouTube:
 
 If things go wrong, delete this file:
 
-     ~/.credentials/youtube-quickstart.json
+        rm ~/.credentials/youtube-go-quickstart.json 
 
