@@ -2,7 +2,16 @@
 
 {{ .Body }}
 
-{{ if .HasSubscribeLink }}→ SUBSCRIBE for a NEW EPISODE every WEDNESDAY: http://www.DevelopmentThatPays.com/-/subscribe{{ end }}
+= = = = = = = = = = = = 
+
+JOIN the Development That Pays COMMUNITY (it's free!):
+→ https://www.developmentthatpays.com/community
+
+SUBSCRIBE to this Channel:
+→ http://www.DevelopmentThatPays.com/-/subscribe
+
+= = = = = = = = = = = = 
+
 
 {{if .Music}}
 Music:{{ range .Music }} {{ . }}{{ end }}{{ end }}

@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 	// "context"
+	// "github.com/davecgh/go-spew/spew"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/urfave/cli"
@@ -33,6 +34,12 @@ func main() {
 			}
 			if c.Args().Get(0) == "update" {
 
+				id := c.Args().Get(1)
+
+				if id=="114" {
+					fmt.Println("114 excluded - doesn't work")
+					return fmt.Errorf("114 doen't work for some reason")
+				}
 				update(c.Args().Get(1))
 			}
 		}
@@ -130,6 +137,9 @@ func getVideo(videoID string) *youtube.Video {
 	if err != nil {
 		log.Fatalf("Error making API call to get video  data: %v", err.Error()) // The channels.list method call returned an error.
 	}
+
+	// spew.Dump(response)
+
 	if len(response.Items) < 1 {
 		panic("Video id not found:" + videoID)
 	}
@@ -278,8 +288,16 @@ func getPosts(id string) map[int]Post {
 	defer db.Close()
 	posts := make(map[int]Post)
 	q := "SELECT posts.id, slug, title, description, coalesce(yt_hashtags, ''), topresult, click_to_tweet, transcript, youtube.id AS youtube_id, youtube.body AS youtube_body, coalesce(youtube.playlist, '') AS youtube_playlist FROM posts LEFT JOIN youtube ON posts.id = youtube.post_id"
+	q = q + " WHERE 1 = 1 "
+	
+	
+	// HACK
+	fmt.Println("114 excluded - doesn't work")
+	q = q + " AND posts.id <> 114 "
+	
+
 	if id != "" {
-		q = q + fmt.Sprintf(" WHERE posts.id = %s", id)
+		q = q + fmt.Sprintf(" AND posts.id = %s", id)
 	}
 
 	rows, err := db.Query(q)
